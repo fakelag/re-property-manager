@@ -34,6 +34,7 @@ namespace backend
 			// Map services
 			services.AddSingleton<MongoService>();
 			services.AddSingleton<PropertyService>();
+			services.AddSingleton<UserService>();
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
