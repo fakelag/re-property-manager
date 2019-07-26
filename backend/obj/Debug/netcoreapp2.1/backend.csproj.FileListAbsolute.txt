@@ -1,0 +1,14 @@
+F:\Projects\re-property-manager\backend\bin\Debug\netcoreapp2.1\backend.deps.json
+F:\Projects\re-property-manager\backend\bin\Debug\netcoreapp2.1\backend.runtimeconfig.json
+F:\Projects\re-property-manager\backend\bin\Debug\netcoreapp2.1\backend.runtimeconfig.dev.json
+F:\Projects\re-property-manager\backend\bin\Debug\netcoreapp2.1\backend.dll
+F:\Projects\re-property-manager\backend\bin\Debug\netcoreapp2.1\backend.pdb
+F:\Projects\re-property-manager\backend\obj\Debug\netcoreapp2.1\backend.csprojAssemblyReference.cache
+F:\Projects\re-property-manager\backend\obj\Debug\netcoreapp2.1\backend.csproj.CoreCompileInputs.cache
+F:\Projects\re-property-manager\backend\obj\Debug\netcoreapp2.1\backend.RazorAssemblyInfo.cache
+F:\Projects\re-property-manager\backend\obj\Debug\netcoreapp2.1\backend.RazorAssemblyInfo.cs
+F:\Projects\re-property-manager\backend\obj\Debug\netcoreapp2.1\backend.AssemblyInfoInputs.cache
+F:\Projects\re-property-manager\backend\obj\Debug\netcoreapp2.1\backend.AssemblyInfo.cs
+F:\Projects\re-property-manager\backend\obj\Debug\netcoreapp2.1\backend.RazorTargetAssemblyInfo.cache
+F:\Projects\re-property-manager\backend\obj\Debug\netcoreapp2.1\backend.dll
+F:\Projects\re-property-manager\backend\obj\Debug\netcoreapp2.1\backend.pdb
