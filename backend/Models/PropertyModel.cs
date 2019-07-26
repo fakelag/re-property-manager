@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 
 namespace backend.Models
 {
@@ -10,6 +11,7 @@ namespace backend.Models
         public string Id { get; set; }
 
 		[BsonElement("address")]
+		[JsonProperty("address")]
 		public string Address { get; set; }
 	}
 }
