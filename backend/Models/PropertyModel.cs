@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace backend.Models
 {
@@ -17,5 +18,9 @@ namespace backend.Models
 		[BsonElement("owner")]
 		[JsonProperty("owner")]
 		public string Owner { get; set; }
+
+		[BsonElement("contracts")]
+		[JsonProperty("contracts")]
+		public List<RentalContract> Contracts { get; set; }
 	}
 }
