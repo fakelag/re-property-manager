@@ -14,11 +14,10 @@ namespace backend.Services
             _properties = service.GetDatabase().GetCollection<Property>(settings.Collections.Properties);
         }
 
-        public List<Property> Get() =>
-            _properties.Find(property => true).ToList();
-
-        public Property Get(string id) =>
-            _properties.Find<Property>(property => property.Id == id).FirstOrDefault();
+        public Property Get(string id) => _properties.Find(property => property.Id == id).FirstOrDefault();
+		public Property Get(string id, string userId) => _properties.Find(property => property.Id == id && property.Owner == userId).FirstOrDefault();
+        public List<Property> ListByUser(string userId) => _properties.Find(property => property.Owner == userId).ToList();
+		public List<Property> List() => _properties.Find(property => true).ToList();
 
         public Property Create(Property property)
         {
@@ -26,13 +25,8 @@ namespace backend.Services
             return property;
         }
 
-        public void Update(string id, Property propertyIn) =>
-            _properties.ReplaceOne(property => property.Id == id, propertyIn);
-
-        public void Remove(Property propertyIn) =>
-            _properties.DeleteOne(property => property.Id == propertyIn.Id);
-
-        public void Remove(string id) => 
-            _properties.DeleteOne(property => property.Id == id);
+        public void Update(string id, Property propertyIn) => _properties.ReplaceOne(property => property.Id == id, propertyIn);
+        public void Remove(Property propertyIn) => _properties.DeleteOne(property => property.Id == propertyIn.Id);
+        public void Remove(string id) => _properties.DeleteOne(property => property.Id == id);
     }
 }
