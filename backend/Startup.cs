@@ -50,8 +50,8 @@ namespace backend
 			services.AddDistributedMemoryCache();
 			services.AddSession(options =>
 			{
-				options.IdleTimeout = TimeSpan.FromSeconds(10);
-				options.Cookie.HttpOnly = false;
+				options.IdleTimeout = TimeSpan.FromMinutes(Convert.ToDouble(Configuration["BackendSettings:SessionLifeTimeMinutes"]));
+				options.Cookie.HttpOnly = true;
 				options.Cookie.IsEssential = true;
 				options.Cookie.Name = "re-manager-session";
 				options.Cookie.SameSite = SameSiteMode.None;
