@@ -70,6 +70,7 @@ namespace backend
 				app.UseHttpsRedirection();
             }
 
+			app.UseCookiePolicy();
 			app.UseSession();
             app.UseMvc();
         }
