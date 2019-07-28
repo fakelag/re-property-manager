@@ -38,6 +38,7 @@ namespace backend
 
 			// Map services
 			services.AddSingleton<MongoService>();
+			services.AddSingleton<JwtService>();
 			services.AddSingleton<PropertyService>();
 			services.AddSingleton<UserService>();
 
