@@ -23,7 +23,7 @@ namespace backend.Services
 				Audience = null,
 				IssuedAt = DateTime.UtcNow,
 				NotBefore = DateTime.UtcNow,
-				Expires = DateTime.UtcNow.AddMinutes(60),
+				Expires = DateTime.UtcNow.AddMinutes(_settings.JwtLifeTimeMinutes),
 				Subject = new ClaimsIdentity(new Claim[] 
                 {
                     new Claim(ClaimTypes.Name, userId),
