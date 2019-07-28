@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,10 +42,22 @@ namespace backend
 			services.AddSingleton<PropertyService>();
 			services.AddSingleton<UserService>();
 
-			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+			services.AddMvc()
+				.AddSessionStateTempDataProvider()
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+			// Sessions
+			services.AddDistributedMemoryCache();
+			services.AddSession(options =>
+			{
+				options.IdleTimeout = TimeSpan.FromSeconds(10);
+				options.Cookie.HttpOnly = false;
+				options.Cookie.IsEssential = true;
+				options.Cookie.Name = "re-manager-session";
+				options.Cookie.SameSite = SameSiteMode.None;
+			});
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -58,6 +70,7 @@ namespace backend
 				app.UseHttpsRedirection();
             }
 
+			app.UseSession();
             app.UseMvc();
         }
     }
