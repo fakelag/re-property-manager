@@ -20,9 +20,18 @@ namespace backend
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+			services.Configure<CookiePolicyOptions>(options =>
+			{
+				options.CheckConsentNeeded = context => false;
+				options.MinimumSameSitePolicy = SameSiteMode.None;
+			});
+
+			// Map backend settings
+			services.Configure<BackendSettings>(Configuration.GetSection(nameof(BackendSettings)));
+			services.AddSingleton<IBackendSettings>(sp => sp.GetRequiredService<IOptions<BackendSettings>>().Value);
+
 			// Map database settings
 			services.Configure<DatabaseSettings>(Configuration.GetSection(nameof(DatabaseSettings)));
 			services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
