@@ -15,7 +15,7 @@ namespace backend.Models
 		public string Username { get; set; }
 
 		[BsonElement("password")]
-		[JsonProperty("password")]
+		[JsonIgnore]
 		public string Password { get; set; }
 	}
 }
