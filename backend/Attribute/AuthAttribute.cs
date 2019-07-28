@@ -21,7 +21,7 @@ namespace backend.Attributes
 
 			var jwtToken = ctx.HttpContext.Session.GetString("token");
 
-			if (jwtToken == null)
+			if (jwtToken == null || jwtToken.Length <= 0)
 			{
 				ctx.Result = new StatusCodeResult((int)System.Net.HttpStatusCode.Forbidden);
 				return;
