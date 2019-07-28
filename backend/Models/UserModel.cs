@@ -7,8 +7,8 @@ namespace backend.Models
 	public class User
 	{
 		[BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+		[BsonRepresentation(BsonType.ObjectId)]
+		public string Id { get; set; }
 
 		[BsonElement("username")]
 		[JsonProperty("username")]
