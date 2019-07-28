@@ -61,11 +61,5 @@ namespace backend.Services
 
 			return true;
 		}
-
-        public void Remove(Property propertyIn) =>
-            _users.DeleteOne(property => property.Id == propertyIn.Id);
-
-        public void Remove(string id) => 
-            _users.DeleteOne(property => property.Id == id);
     }
 }
