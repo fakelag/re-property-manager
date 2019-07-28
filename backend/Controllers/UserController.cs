@@ -60,6 +60,15 @@ namespace backend.Controllers
 		}
 
 		[IsLogged]
+		[Route("logout")]
+		[HttpPost]
+		public ActionResult<User> Logout()
+		{
+			Response.HttpContext.Session.SetString("token", "");
+			return Ok();
+		}
+
+		[IsLogged]
 		[Route("password")]
 		[HttpPost]
 		public ActionResult<User> SetPassword(SetPasswordFields setPassword)
