@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using backend.Models;
 using backend.Services;
@@ -24,21 +20,44 @@ namespace backend
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+			services.Configure<CookiePolicyOptions>(options =>
+			{
+				options.CheckConsentNeeded = context => false;
+				options.MinimumSameSitePolicy = SameSiteMode.None;
+			});
+
+			// Map backend settings
+			services.Configure<BackendSettings>(Configuration.GetSection(nameof(BackendSettings)));
+			services.AddSingleton<IBackendSettings>(sp => sp.GetRequiredService<IOptions<BackendSettings>>().Value);
+
 			// Map database settings
 			services.Configure<DatabaseSettings>(Configuration.GetSection(nameof(DatabaseSettings)));
 			services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
 			// Map services
 			services.AddSingleton<MongoService>();
+			services.AddSingleton<JwtService>();
 			services.AddSingleton<PropertyService>();
+			services.AddSingleton<UserService>();
 
-			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+			services.AddMvc()
+				.AddSessionStateTempDataProvider()
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+			// Sessions
+			services.AddDistributedMemoryCache();
+			services.AddSession(options =>
+			{
+				options.IdleTimeout = TimeSpan.FromMinutes(Convert.ToDouble(Configuration["BackendSettings:SessionLifeTimeMinutes"]));
+				options.Cookie.HttpOnly = true;
+				options.Cookie.IsEssential = true;
+				options.Cookie.Name = "re-manager-session";
+				options.Cookie.SameSite = SameSiteMode.None;
+			});
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -51,6 +70,7 @@ namespace backend
 				app.UseHttpsRedirection();
             }
 
+			app.UseSession();
             app.UseMvc();
         }
     }
