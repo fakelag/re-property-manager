@@ -5,6 +5,7 @@ namespace backend.Models
 		public string Properties { get; set; }
 		public string Users { get; set; }
 	}
+
 	public interface IDatabaseSettings
 	{
 		string ConnectionString { get; set; }
@@ -12,6 +13,7 @@ namespace backend.Models
 
 		DatabaseCollections Collections { get; set; }
 	}
+
 	public class DatabaseSettings : IDatabaseSettings
 	{
 		public string ConnectionString { get; set; }
