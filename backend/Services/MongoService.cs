@@ -7,6 +7,7 @@ namespace backend.Services
 	{
 		private MongoClient _client;
 		private IMongoDatabase _database;
+
 		public MongoService(IDatabaseSettings settings)
 		{
 			_client = new MongoClient(settings.ConnectionString);

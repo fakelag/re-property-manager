@@ -13,5 +13,9 @@ namespace backend.Models
 		[BsonElement("address")]
 		[JsonProperty("address")]
 		public string Address { get; set; }
+
+		[BsonElement("owner")]
+		[JsonProperty("owner")]
+		public string Owner { get; set; }
 	}
 }
