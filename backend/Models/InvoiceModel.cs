@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace backend.Models
 {
-	public class InvoiceModel
+	public class Invoice
 	{
 		[BsonId]
 		[BsonRepresentation(BsonType.ObjectId)]
