@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace backend.Attributes
 {
 	[AttributeUsageAttribute(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-	public class IsLogged : ActionFilterAttribute
+	public class Authenticate : ActionFilterAttribute
 	{
 		public override void OnActionExecuting(ActionExecutingContext ctx)
 		{

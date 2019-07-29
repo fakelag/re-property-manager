@@ -17,7 +17,7 @@ namespace backend.Controllers
 			_propertyService = propertyService;
 		}
 
-		[IsLogged]
+		[Authenticate]
 		[HttpGet]
 		public ActionResult<List<Property>> Get()
 		{
@@ -25,7 +25,7 @@ namespace backend.Controllers
 			return _propertyService.ListByUser(user.Id);
 		}
 
-		[IsLogged]
+		[Authenticate]
 		[HttpGet("{id:length(24)}", Name = "GetProperty")]
 		public ActionResult<Property> Get(string id)
 		{
@@ -38,7 +38,7 @@ namespace backend.Controllers
 			return property;
 		}
 
-		[IsLogged]
+		[Authenticate]
 		[HttpPut]
 		public ActionResult<Property> Create(Property property)
 		{
@@ -52,7 +52,7 @@ namespace backend.Controllers
 			return CreatedAtRoute("GetProperty", new { id = property.Id.ToString() }, property);
         }
 
-		[IsLogged]
+		[Authenticate]
 		[HttpPost("{id:length(24)}")]
 		public ActionResult<Property> Update(string id, Property propertyIn)
 		{
@@ -70,7 +70,7 @@ namespace backend.Controllers
 			return propertyIn;
 		}
 
-		[IsLogged]
+		[Authenticate]
 		[HttpDelete("{id:length(24)}")]
 		public ActionResult Delete(string id)
 		{
