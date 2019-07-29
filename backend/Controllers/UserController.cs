@@ -33,7 +33,7 @@ namespace backend.Controllers
 
 		[IsLogged]
 		[HttpGet]
-		public ActionResult<string> Get() => "1234";
+		public ActionResult<User> Get() => (User) Request.HttpContext.Items["user"];
 
 		[Route("login")]
 		[HttpPost]
@@ -64,7 +64,7 @@ namespace backend.Controllers
 		[IsLogged]
 		[Route("logout")]
 		[HttpPost]
-		public ActionResult<User> Logout()
+		public ActionResult Logout()
 		{
 			Response.HttpContext.Session.SetString("token", "");
 			return Ok();
