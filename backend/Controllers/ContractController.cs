@@ -37,7 +37,7 @@ namespace backend.Controllers
 		[IsLogged]
 		[Route("list")]
 		[HttpGet]
-		public ActionResult<List<RentalContract>> Get()
+		public ActionResult<List<RentalContract>> List()
 		{
 			User user = (User) Request.HttpContext.Items["user"];
 
@@ -47,15 +47,16 @@ namespace backend.Controllers
 
 		[IsLogged]
 		[HttpGet("{id:length(24)}")]
-		public ActionResult<RentalContract> Get(string contractId)
+		public ActionResult<RentalContract> Get(string id)
 		{
+			Console.WriteLine("get contraccc= " + id);
 			User user = (User) Request.HttpContext.Items["user"];
 
 			var properties = _propertyService.ListByUser(user.Id);
 
 			foreach (Property prop in properties)
 			{
-				var contract = prop.Contracts.Find(ct => ct.Id == contractId);
+				var contract = prop.Contracts.Find(ct => ct.Id == id);
 
 				if (contract != null)
 					return contract;
