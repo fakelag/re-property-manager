@@ -1,3 +1,4 @@
+using System;
 using backend.Models;
 using backend.Services;
 using backend.Attributes;
@@ -51,8 +52,9 @@ namespace backend.Controllers
 			{
 				Response.HttpContext.Session.SetString("token", jwtService.WriteToken(user.Id.ToString()));
 			}
-			catch
+			catch (Exception e)
 			{
+				Console.WriteLine("Unable to write session JWT: " + e.ToString());
 				return BadRequest();
 			}
 
