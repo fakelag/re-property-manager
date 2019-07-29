@@ -11,6 +11,10 @@ namespace backend.Models
 		[BsonRepresentation(BsonType.ObjectId)]
 		public string Id { get; set; }
 
+		[BsonElement("owner")]
+		[JsonProperty("owner")]
+		public string Owner { get; set; }
+
 		[BsonElement("amount")]
 		[JsonProperty("amount")]
 		public Decimal Amount { get; set; }
