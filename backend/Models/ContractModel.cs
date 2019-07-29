@@ -13,5 +13,10 @@ namespace backend.Models
 		[BsonElement("property")]
 		[JsonProperty("property")]
 		public string Property { get; set; }
+
+		[BsonElement("participant")]
+		[JsonProperty("participant")]
+		[JsonRequired]
+		public ContractParticipant Participant { get; set; }
 	}
 }
