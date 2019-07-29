@@ -1,7 +1,7 @@
 using System;
+using System.Linq;
 using backend.Models;
 using MongoDB.Driver;
-using System.Linq;
 
 namespace backend.Services
 {
@@ -20,6 +20,9 @@ namespace backend.Services
 		{
 			contract.Property = property.Id;
 			property.Contracts.Append(contract);
+
+			var update = Builders<Property>.Update.Set("contracts", property.Contracts);
+			_properties.FindOneAndUpdate<Property>(prop => prop.Id == property.Id, update);
 		}
 
         public void Update(Property property, string id, RentalContract contract)
@@ -31,6 +34,9 @@ namespace backend.Services
 
 			property.Contracts[index] = contract;
 			property.Contracts[index].Property = property.Id;
+
+			var update = Builders<Property>.Update.Set("contracts", property.Contracts);
+			_properties.FindOneAndUpdate<Property>(prop => prop.Id == property.Id, update);
 		}
 
         public void Remove(Property property, string id)
@@ -41,6 +47,9 @@ namespace backend.Services
 				return;
 
 			property.Contracts.RemoveAt(index);
+
+			var update = Builders<Property>.Update.Set("contracts", property.Contracts);
+			_properties.FindOneAndUpdate<Property>(prop => prop.Id == property.Id, update);
 		}
     }
 }
