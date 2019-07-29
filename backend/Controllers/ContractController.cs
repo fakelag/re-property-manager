@@ -34,7 +34,7 @@ namespace backend.Controllers
 			_contractService = contractService;
 		}
 
-		[IsLogged]
+		[Authenticate]
 		[Route("list")]
 		[HttpGet]
 		public ActionResult<List<RentalContract>> List()
@@ -45,11 +45,10 @@ namespace backend.Controllers
 			return properties.ConvertAll(prop => prop.Contracts).SelectMany(ct => ct).ToList();
 		}
 
-		[IsLogged]
+		[Authenticate]
 		[HttpGet("{id:length(24)}")]
 		public ActionResult<RentalContract> Get(string id)
 		{
-			Console.WriteLine("get contraccc= " + id);
 			User user = (User) Request.HttpContext.Items["user"];
 
 			var properties = _propertyService.ListByUser(user.Id);
@@ -65,7 +64,7 @@ namespace backend.Controllers
 			return NotFound();
 		}
 
-		[IsLogged]
+		[Authenticate]
 		[HttpPut]
 		public ActionResult<RentalContract> Create(CreateContractFields createContract)
 		{
@@ -83,7 +82,7 @@ namespace backend.Controllers
 			return createContract.contract;
 		}
 
-		[IsLogged]
+		[Authenticate]
 		[HttpPost]
 		public ActionResult<RentalContract> Update(UpdateContractFields updateContract)
 		{

@@ -31,7 +31,7 @@ namespace backend.Controllers
 			_userService = userService;
 		}
 
-		[IsLogged]
+		[Authenticate]
 		[HttpGet]
 		public ActionResult<User> Get() => (User) Request.HttpContext.Items["user"];
 
@@ -61,7 +61,7 @@ namespace backend.Controllers
 			return user;
 		}
 
-		[IsLogged]
+		[Authenticate]
 		[Route("logout")]
 		[HttpPost]
 		public ActionResult Logout()
@@ -70,7 +70,7 @@ namespace backend.Controllers
 			return Ok();
 		}
 
-		[IsLogged]
+		[Authenticate]
 		[Route("password")]
 		[HttpPost]
 		public ActionResult<User> SetPassword(SetPasswordFields setPassword)
