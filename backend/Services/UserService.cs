@@ -1,8 +1,8 @@
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 using backend.Models;
 using MongoDB.Driver;
-using System.Linq;
 
 namespace backend.Services
 {
@@ -21,6 +21,26 @@ namespace backend.Services
             _users.InsertOne(user);
             return user;
         }
+
+		public User CreateAdminUser(string username, string password)
+		{
+			var user = _users.Find(usr => usr.Username == username).FirstOrDefault();
+
+			if (user != null)
+				return user;
+
+			user = new User();
+
+			user.Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
+			user.Username = username;
+			user.Password = password;
+
+			Create(user);
+			SetPassword(user.Id, password);
+
+			return user;
+		}
+
 		public void SetPassword(string id, string password)
 		{
 			byte[] salt;
