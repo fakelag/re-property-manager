@@ -54,7 +54,7 @@ namespace backend.Controllers
 
 		[IsLogged]
 		[HttpPost("{id:length(24)}")]
-		public ActionResult Update(string id, Property propertyIn)
+		public ActionResult<Property> Update(string id, Property propertyIn)
 		{
 			var user = (User) Request.HttpContext.Items["user"];
 
@@ -65,8 +65,9 @@ namespace backend.Controllers
 
 			propertyIn.Id = property.Id;
 			propertyIn.Owner = property.Owner;
+
 			_propertyService.Update(id, propertyIn);
-			return NoContent();
+			return propertyIn;
 		}
 
 		[IsLogged]
@@ -81,7 +82,7 @@ namespace backend.Controllers
 				return NotFound();
 
 			_propertyService.Remove(property.Id);
-			return NoContent();
+			return Ok();
 		}
 	}
 }
