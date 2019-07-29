@@ -74,10 +74,13 @@ namespace backend
 			app.UseSession();
             app.UseMvc();
 
-			var serviceProvider = app.ApplicationServices;
-			var userService = serviceProvider.GetService<UserService>();
+			if (env.IsDevelopment())
+			{
+				var serviceProvider = app.ApplicationServices;
+				var userService = serviceProvider.GetService<UserService>();
 
-			userService.CreateAdminUser("fakelag", "123");
+				userService.CreateAdminUser("fakelag", "123");
+			}
         }
     }
 }
