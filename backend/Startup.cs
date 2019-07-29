@@ -73,6 +73,11 @@ namespace backend
 			app.UseCookiePolicy();
 			app.UseSession();
             app.UseMvc();
+
+			var serviceProvider = app.ApplicationServices;
+			var userService = serviceProvider.GetService<UserService>();
+
+			userService.CreateAdminUser("fakelag", "123");
         }
     }
 }
