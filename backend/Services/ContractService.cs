@@ -19,15 +19,15 @@ namespace backend.Services
 		public void Create(Property property, RentalContract contract)
 		{
 			contract.Property = property.Id;
-			property.Contracts.Append(contract);
+			property.Contracts.Add(contract);
 
 			var update = Builders<Property>.Update.Set("contracts", property.Contracts);
 			_properties.FindOneAndUpdate<Property>(prop => prop.Id == property.Id, update);
 		}
 
-        public void Update(Property property, string id, RentalContract contract)
+        public void Update(Property property, string contractId, RentalContract contract)
 		{
-			var index = property.Contracts.FindIndex(rc => rc.Id == id);
+			var index = property.Contracts.FindIndex(rc => rc.Id == contractId);
 
 			if (index == -1)
 				throw new Exception("Update property not found");

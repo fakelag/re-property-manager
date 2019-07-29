@@ -40,6 +40,7 @@ namespace backend
 			services.AddSingleton<MongoService>();
 			services.AddSingleton<JwtService>();
 			services.AddSingleton<PropertyService>();
+			services.AddSingleton<ContractService>();
 			services.AddSingleton<UserService>();
 
 			services.AddMvc()
