@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
@@ -15,6 +17,17 @@ namespace backend.Models
 		public string Collection { get; set; }
 
 		[BsonElement("linkedObject")]
+		[JsonProperty("linkedObject")]
+		public string LinkedObject { get; set; }
+	}
+
+	public class ObjectLinkFields
+	{
+		[RegularExpression("[invoices|properties]")]
+		[JsonProperty("collection")]
+		public string Collection { get; set; }
+
+		[StringLength(24, MinimumLength = 24)]
 		[JsonProperty("linkedObject")]
 		public string LinkedObject { get; set; }
 	}
