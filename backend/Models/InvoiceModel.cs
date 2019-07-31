@@ -7,6 +7,11 @@ namespace backend.Models
 {
 	public class Invoice
 	{
+		public Invoice()
+		{
+			AmountPaid = 0.0M;
+		}
+
 		[BsonId]
 		[BsonRepresentation(BsonType.ObjectId)]
 		public string Id { get; set; }
@@ -19,6 +24,7 @@ namespace backend.Models
 		[JsonProperty("amount")]
 		public Decimal Amount { get; set; }
 
+		[BsonIgnore]
 		[JsonProperty("amountPaid")]
 		public Decimal AmountPaid { get; set; }
 
