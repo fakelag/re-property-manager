@@ -3,6 +3,7 @@ namespace backend.Models
 	public class DatabaseCollections
 	{
 		public string Properties { get; set; }
+		public string Invoices { get; set; }
 		public string Users { get; set; }
 	}
 

@@ -44,11 +44,7 @@ namespace backend.Controllers
 		{
 			var user = (User) Request.HttpContext.Items["user"];
 
-			property.Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
-			property.Owner = user.Id;
-
-			_propertyService.Create(property);
-
+			_propertyService.Create(user.Id, property);
 			return CreatedAtRoute("GetProperty", new { id = property.Id.ToString() }, property);
         }
 
