@@ -16,16 +16,18 @@ namespace backend.Services
 
 		public RentalContract Get(Property property, string id) => property.Contracts.Find(contract => contract.Id == id);
 
-		public void Create(Property property, RentalContract contract)
+		public RentalContract Create(Property property, RentalContract contract)
 		{
 			contract.Property = property.Id;
 			property.Contracts.Add(contract);
 
 			var update = Builders<Property>.Update.Set("contracts", property.Contracts);
 			_properties.FindOneAndUpdate<Property>(prop => prop.Id == property.Id, update);
+
+			return contract;
 		}
 
-        public void Update(Property property, string contractId, RentalContract contract)
+        public RentalContract Update(Property property, string contractId, RentalContract contract)
 		{
 			var index = property.Contracts.FindIndex(rc => rc.Id == contractId);
 
@@ -37,6 +39,8 @@ namespace backend.Services
 
 			var update = Builders<Property>.Update.Set("contracts", property.Contracts);
 			_properties.FindOneAndUpdate<Property>(prop => prop.Id == property.Id, update);
+
+			return property.Contracts[index];
 		}
 
         public void Remove(Property property, string id)
