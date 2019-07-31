@@ -41,6 +41,7 @@ namespace backend
 			services.AddSingleton<JwtService>();
 			services.AddSingleton<PropertyService>();
 			services.AddSingleton<ContractService>();
+			services.AddSingleton<InvoiceService>();
 			services.AddSingleton<UserService>();
 
 			services.AddMvc()
