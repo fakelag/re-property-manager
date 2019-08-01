@@ -64,11 +64,8 @@ namespace backend
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-			var bundleFolder = "prod";
-
             if (env.IsDevelopment())
             {
-				bundleFolder = "dev";
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -77,12 +74,8 @@ namespace backend
 				app.UseHttpsRedirection();
             }
 
-			app.UseStaticFiles(new StaticFileOptions
-			{
-				FileProvider = new PhysicalFileProvider(
-					Path.Combine(Directory.GetCurrentDirectory(), "../frontend/.dist/bundle/" + bundleFolder)),
-				RequestPath = ""
-			});
+			app.UseDefaultFiles();
+			app.UseStaticFiles();
 
 			app.UseCookiePolicy();
 			app.UseSession();

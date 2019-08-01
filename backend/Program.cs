@@ -12,13 +12,20 @@ namespace backend
 {
     public class Program
     {
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
-        }
+		public static void Main(string[] args)
+		{
+			var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+			var isDevelopment = environment == EnvironmentName.Development;
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+			var host = WebHost.CreateDefaultBuilder(args)
+				.UseWebRoot(Path.Combine(Directory.GetCurrentDirectory(),
+					"../frontend/.dist/bundle", isDevelopment ? "dev" : "prod"))
+				.UseKestrel()
+				.UseIISIntegration()
+				.UseStartup<Startup>()
+				.Build();
+
+			host.Run();
+		}
     }
 }
