@@ -44,8 +44,8 @@ namespace backend.Models
 		[JsonProperty("dueDate")]
 		public DateTime DueDate { get; set; }
 
-		[BsonElement("linkedTo")]
-		[JsonProperty("linkedTo")]
-		public ObjectLink LinkedTo { get; set; }
+		[BsonElement("linkedContract")]
+		[JsonProperty("linkedContract")]
+		public string Contract { get; set; }
 	}
 }

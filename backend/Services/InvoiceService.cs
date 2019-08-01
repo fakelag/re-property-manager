@@ -8,10 +8,12 @@ namespace backend.Services
 	public class InvoiceService
 	{
 		private readonly IMongoCollection<Invoice> _invoices;
+		private readonly ContractService _contractService;
 
-		public InvoiceService(IDatabaseSettings settings, MongoService service)
+		public InvoiceService(IDatabaseSettings settings, MongoService mongoService, ContractService contractService)
 		{
-			_invoices = service.GetDatabase().GetCollection<Invoice>(settings.Collections.Invoices);
+			_invoices = mongoService.GetDatabase().GetCollection<Invoice>(settings.Collections.Invoices);
+			_contractService = contractService;
 		}
 
 		public Invoice Get(string id) => _invoices.Find(inv => inv.Id == id).FirstOrDefault();
@@ -19,8 +21,18 @@ namespace backend.Services
 		public List<Invoice> ListByUser(string userId) => _invoices.Find(inv => inv.Owner == userId).ToList();
 
 		public Invoice Create(string ownerId, Decimal amount,
-			string currency, DateTime dueDate, string description = "", ObjectLink linkedObject = null)
+			string currency, DateTime dueDate, string description = "",
+			string linkedContract = null)
 		{
+			if (linkedContract != null)
+			{
+				// verify contract exists
+				var contract = _contractService.Get(ownerId, linkedContract);
+
+				if (contract == null)
+					throw new Exception("link_contract_not_found");
+			}
+
 			Invoice newInvoice = new Invoice();
 
 			newInvoice.Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
@@ -31,7 +43,7 @@ namespace backend.Services
 			newInvoice.DueDate = dueDate;
 			newInvoice.AmountPaid = 0.0M;
 			newInvoice.Owner = ownerId;
-			newInvoice.LinkedTo = linkedObject;
+			newInvoice.Contract = linkedContract;
 
 			_invoices.InsertOne(newInvoice);
 			return newInvoice;

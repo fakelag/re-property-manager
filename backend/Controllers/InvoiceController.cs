@@ -10,7 +10,7 @@ namespace backend.Controllers
 	public class InvoiceCreationFields
 	{
 		public string description;
-		public string linkTo;
+		public string linkedContract;
 		public Decimal amount;
 		public DateTime dueDate;
 	}
@@ -20,11 +20,13 @@ namespace backend.Controllers
 	public class InvoiceController : ControllerBase
 	{
 		private readonly InvoiceService _invoiceService;
+		private readonly MongoService _mongoService;
 		private readonly IBackendSettings _settings;
 
-		public InvoiceController(IBackendSettings settings, InvoiceService invoiceService)
+		public InvoiceController(IBackendSettings settings, InvoiceService invoiceService, MongoService mongoService)
 		{
 			_invoiceService = invoiceService;
+			_mongoService = mongoService;
 			_settings = settings;
 		}
 
@@ -55,11 +57,24 @@ namespace backend.Controllers
 		{
 			var user = (User) Request.HttpContext.Items["user"];
 
-			Invoice invoice = _invoiceService.Create(user.Id, invoiceCreation.amount,
-				_settings.Currency, invoiceCreation.dueDate, invoiceCreation.description,
-				null);
+			try
+			{
+				Invoice invoice = _invoiceService.Create(user.Id, invoiceCreation.amount,
+					_settings.Currency, invoiceCreation.dueDate, invoiceCreation.description,
+					invoiceCreation.linkedContract);
 
-			return CreatedAtRoute("GetInvoice", new { id = invoice.Id.ToString() }, invoice);
+				return CreatedAtRoute("GetInvoice", new { id = invoice.Id.ToString() }, invoice);
+			}
+			catch (Exception e)
+			{
+				switch (e.Message)
+				{
+					case "link_contract_not_found":
+						return NotFound();
+					default:
+						throw e;
+				}
+			}
         }
 
 		[Authenticate]
