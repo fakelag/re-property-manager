@@ -57,24 +57,24 @@ namespace backend.Controllers
 		{
 			var user = (User) Request.HttpContext.Items["user"];
 
-			if (invoiceCreation.objectLink != null)
+			try
 			{
-				if (invoiceCreation.objectLink.Collection != null)
+				Invoice invoice = _invoiceService.Create(user.Id, invoiceCreation.amount,
+					_settings.Currency, invoiceCreation.dueDate, invoiceCreation.description,
+					invoiceCreation.linkedContract);
+
+				return CreatedAtRoute("GetInvoice", new { id = invoice.Id.ToString() }, invoice);
+			}
+			catch (Exception e)
+			{
+				switch (e.Message)
 				{
-					// create a link
-					// _mongoService.GetDatabase().GetCollection(invoiceCreation.objectLink.Collection);
-				}
-				else
-				{
-					// reset link
+					case "link_contract_not_found":
+						return NotFound();
+					default:
+						throw e;
 				}
 			}
-
-			Invoice invoice = _invoiceService.Create(user.Id, invoiceCreation.amount,
-				_settings.Currency, invoiceCreation.dueDate, invoiceCreation.description,
-				null);
-
-			return CreatedAtRoute("GetInvoice", new { id = invoice.Id.ToString() }, invoice);
         }
 
 		[Authenticate]
