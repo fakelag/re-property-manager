@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.FileProviders;
 using backend.Models;
 using backend.Services;
 
@@ -62,8 +64,11 @@ namespace backend
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+			var bundleFolder = "prod";
+
             if (env.IsDevelopment())
             {
+				bundleFolder = "dev";
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -71,6 +76,13 @@ namespace backend
                 app.UseHsts();
 				app.UseHttpsRedirection();
             }
+
+			app.UseStaticFiles(new StaticFileOptions
+			{
+				FileProvider = new PhysicalFileProvider(
+					Path.Combine(Directory.GetCurrentDirectory(), "../frontend/.dist/bundle/" + bundleFolder)),
+				RequestPath = ""
+			});
 
 			app.UseCookiePolicy();
 			app.UseSession();
