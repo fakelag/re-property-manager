@@ -10,10 +10,9 @@ namespace backend.Controllers
 	public class InvoiceCreationFields
 	{
 		public string description;
-		public string linkTo;
+		public string linkedContract;
 		public Decimal amount;
 		public DateTime dueDate;
-		public ObjectLinkFields objectLink;
 	}
 
 	[Route("api/[controller]")]
