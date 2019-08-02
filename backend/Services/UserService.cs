@@ -14,7 +14,11 @@ namespace backend.Services
         {
             _users = service.GetDatabase().GetCollection<User>(settings.Collections.Users);
         }
+
         public User Get(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
+
+		public User GetByUserName(string username) =>
+			_users.Find<User>(user => user.Username == username).FirstOrDefault();
 
         public User Create(User user)
         {
