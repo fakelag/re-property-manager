@@ -5,6 +5,25 @@ import Login from './Login';
 
 const Root = () => {
 	const [loginData, setLoginData] = useState({ id: '' });
+	const [hasFetchedLogin, setHasFetchedLogin] = useState(false);
+
+	if (!hasFetchedLogin) {
+		(async function () {
+			try {
+				const response = await axios.get<{
+					id: string;
+					username: string;
+				}>('/api/user');
+
+				if (response.status === 200 && response.data)
+					setLoginData(response.data);
+			} catch (err) {
+				console.error('Prelogin connection error: ', err);
+			} finally {
+				setHasFetchedLogin(true);
+			}
+		})();
+	}
 
 	const sendLogin = async (username: string, password: string) => {
 		try {
