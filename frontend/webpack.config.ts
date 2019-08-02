@@ -1,6 +1,7 @@
 import HtmlWebpackPlugin = require('html-webpack-plugin');
 import path = require('path');
 import TerserWebpackPlugin = require('terser-webpack-plugin');
+import CopyWebpackPlugin = require('copy-webpack-plugin');
 import webpack = require('webpack');
 
 module.exports = (env: { NODE_ENV: string }) => {
@@ -43,6 +44,9 @@ module.exports = (env: { NODE_ENV: string }) => {
 			sourceMapFilename: 'bundle.js.map',
 		},
 		plugins: (isProduction ? [
+			new CopyWebpackPlugin([
+				{ from: path.join(root, '../index.scss'), to: root },
+			]),
 			new HtmlWebpackPlugin({
 				filename: 'index.html',
 				inject: true,
@@ -59,6 +63,9 @@ module.exports = (env: { NODE_ENV: string }) => {
 				},
 			}),
 		] : [
+			new CopyWebpackPlugin([
+				{ from: path.join(root, '../index.scss'), to: root },
+			]),
 			new HtmlWebpackPlugin({
 				filename: 'index.html',
 				inject: true,
