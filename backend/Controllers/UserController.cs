@@ -63,11 +63,11 @@ namespace backend.Controllers
 
 		[Authenticate]
 		[Route("logout")]
-		[HttpPost]
+		[HttpGet]
 		public ActionResult Logout()
 		{
 			Response.HttpContext.Session.SetString("token", "");
-			return Ok();
+			return Redirect("/");
 		}
 
 		[Authenticate]
