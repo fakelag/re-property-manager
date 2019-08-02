@@ -10,7 +10,7 @@ namespace backend.Controllers
 {
 	public class LoginFields
 	{
-		public string id;
+		public string username;
 		public string password;
 	}
 
@@ -40,7 +40,7 @@ namespace backend.Controllers
 		public ActionResult<User> Login(LoginFields login)
 		{
 			var jwtService = Request.HttpContext.RequestServices.GetService<JwtService>();
-			var user = _userService.Get(login.id);
+			var user = _userService.GetByUserName(login.username);
 
 			if (user == null)
 				return NotFound();
