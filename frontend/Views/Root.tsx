@@ -3,6 +3,10 @@ import axios from 'axios';
 import App from './App';
 import Login from './Login';
 
+import 'primereact/resources/primereact.min.css';
+import 'primereact/resources/themes/nova-light/theme.css';
+import 'primeicons/primeicons.css';
+
 const Root = () => {
 	const [loginData, setLoginData] = useState({ id: '' });
 	const [hasFetchedLogin, setHasFetchedLogin] = useState(false);
