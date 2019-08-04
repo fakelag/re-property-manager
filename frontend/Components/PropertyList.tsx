@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import history from '../router';
 import IProperty from '../interfaces/Property';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -34,7 +35,7 @@ const PropertyList = ({ filterByAddress }: { filterByAddress: string }) => {
 					!filterByAddress
 					|| prop.address.toUpperCase().indexOf(filterByAddress.toUpperCase()) !== -1)}
 				selectionMode="single"
-				onRowSelect={(e: { originalEvent: Event; data: any; type: string; }) => console.log(e.data)}
+				onRowSelect={(e: { data: { id: string } }) => history.push(`/property/${e.data.id}`)}
 			>
 				<Column field="address" header="Address" />
 				<Column field="city" header="City" />
