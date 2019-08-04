@@ -33,6 +33,8 @@ const PropertyList = ({ filterByAddress }: { filterByAddress: string }) => {
 				value={properties.filter((prop) =>
 					!filterByAddress
 					|| prop.address.toUpperCase().indexOf(filterByAddress.toUpperCase()) !== -1)}
+				selectionMode="single"
+				onRowSelect={(e: { originalEvent: Event; data: any; type: string; }) => console.log(e.data)}
 			>
 				<Column field="address" header="Address" />
 				<Column field="city" header="City" />
