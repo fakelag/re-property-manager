@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.FileProviders;
 using backend.Models;
 using backend.Services;
 
@@ -74,12 +73,25 @@ namespace backend
 				app.UseHttpsRedirection();
             }
 
+			// SPA
+			app.Use(async (context, next) =>
+			{
+				await next();
+				var path = context.Request.Path.Value;
+
+				if (!path.StartsWith("/api") && !Path.HasExtension(path))
+				{
+					context.Request.Path = "/index.html";
+					await next();
+				}
+			});
+
 			app.UseDefaultFiles();
 			app.UseStaticFiles();
 
 			app.UseCookiePolicy();
 			app.UseSession();
-            app.UseMvc();
+			app.UseMvc();
 
 			if (env.IsDevelopment())
 			{
