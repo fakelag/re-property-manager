@@ -7,4 +7,4 @@ export default interface IContract {
 		email: string;
 		phone: string;
 	};
-};
+}
