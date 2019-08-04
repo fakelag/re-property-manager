@@ -12,7 +12,7 @@ const Root = () => {
 	const [hasFetchedLogin, setHasFetchedLogin] = useState(false);
 
 	if (!hasFetchedLogin) {
-		(async function () {
+		(async () => {
 			try {
 				const response = await axios.get<{
 					id: string;

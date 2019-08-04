@@ -7,11 +7,11 @@ export default interface IProperty {
 	zip: string;
 	debtFreePrice: number;
 	sellingPrice: number;
-	maintenanceFee: number,
-	financeFee: number,
-	repairFee: number,
+	maintenanceFee: number;
+	financeFee: number;
+	repairFee: number;
 	apartmentType: string;
-	livingArea: number,
+	livingArea: number;
 	owner: string;
 	contracts: IContract[];
-};
+}
