@@ -3,7 +3,7 @@ import path = require('path');
 import TerserWebpackPlugin = require('terser-webpack-plugin');
 import webpack = require('webpack');
 
-module.exports = (env: { NODE_ENV: string }) => {
+module.exports = (env: { NODE_ENV: string }): webpack.Configuration => {
 	const cssLoader: string[] = ['style-loader', 'css-loader', 'sass-loader'];
 	const isProduction: boolean = (env.NODE_ENV === 'production');
 	const root: string = path.resolve(__dirname);
@@ -40,6 +40,7 @@ module.exports = (env: { NODE_ENV: string }) => {
 		output: {
 			filename: 'bundle.js',
 			path: path.join(root, '/bundle/' + (isProduction ? 'prod' : 'dev')),
+			publicPath: '/',
 			sourceMapFilename: 'bundle.js.map',
 		},
 		plugins: (isProduction ? [
