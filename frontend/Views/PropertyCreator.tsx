@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-// import history from '../router';
 import IProperty from '../interfaces/Property';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-// import { DataTable } from 'primereact/datatable';
-// import { Column } from 'primereact/column';
-// import { ProgressSpinner } from 'primereact/progressspinner';
 
 const PropertyCreator = () => {
 	const [property, setProperty] = useState<Partial<IProperty>>({
@@ -24,9 +20,11 @@ const PropertyCreator = () => {
 		zip: '',
 	});
 
-	const createProperty = async () => {
+	const createOrUpdateProperty = async () => {
 		try {
-			const response = await axios.put<IProperty>('/api/property', property);
+			const response = property.id
+				? await axios.post<IProperty>('/api/property', { id: property.id, propertyIn: property })
+				: await axios.put<IProperty>('/api/property', property);
 
 			if ((response.status === 200 // Ok
 				|| response.status === 201) // Created
@@ -41,7 +39,7 @@ const PropertyCreator = () => {
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		event.stopPropagation();
-		createProperty();
+		createOrUpdateProperty();
 	};
 
 	return (<form className="CreatePropertyForm" onSubmit={handleSubmit}>
@@ -178,8 +176,8 @@ const PropertyCreator = () => {
 		</article>
 		<Button
 			type="submit"
-			className="p-button-success"
-			label="Create"
+			className={property.id ? 'p-button-info' : 'p-button-success'}
+			label={property.id ? 'Save' : 'Create'}
 			icon="pi pi-check"
 			iconPos="left"
 		/>
