@@ -1,4 +1,5 @@
 import React from 'react';
+import router from '../router';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
@@ -7,7 +8,16 @@ const Header = ({ searchPlaceholder, onSearch }:
 { searchPlaceholder: string, onSearch(searchString: string): void }) => {
 	const items = [
 		{
+			command: (e: { originalEvent: Event }): void => {
+				if (e.originalEvent.type === 'click') {
+					router.push('/');
+				}
+			},
 			icon: 'pi pi-fw pi-home',
+			label: 'Home',
+		},
+		{
+			icon: 'pi pi-fw pi-briefcase',
 			items: [
 				{
 					icon: 'pi pi-fw pi-plus',
@@ -15,7 +25,7 @@ const Header = ({ searchPlaceholder, onSearch }:
 						{
 							command: (e: { originalEvent: Event }): void => {
 								if (e.originalEvent.type === 'click') {
-									// create a new prop
+									router.push('/createproperty');
 								}
 							},
 							icon: 'pi pi-fw pi-file',
@@ -32,7 +42,7 @@ const Header = ({ searchPlaceholder, onSearch }:
 					label: 'Export',
 				},
 			],
-			label: 'Property',
+			label: 'Properties',
 		},
 	];
 
