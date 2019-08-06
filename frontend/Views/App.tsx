@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Router, Route, Switch } from 'react-router';
 import history from '../router';
 import PropertyPage from './PropertyPage';
+import PropertyCreator from './PropertyCreator';
 import Header from '../Components/Header';
 import PropertyList from '../Components/PropertyList';
 
@@ -20,6 +21,11 @@ const App = () => {
 						exact
 						path="/property/:propertyId"
 						component={PropertyPage}
+					/>
+					<Route
+						exact
+						path="/createproperty"
+						component={PropertyCreator}
 					/>
 					<Route
 						path="*"

@@ -7,6 +7,11 @@ html {
 	font-size: 16px;
 }
 
+label {
+	font-family: "Open Sans", "Helvetica Neue", sans-serif;
+	font-size: 0.875rem;
+}
+
 .Dashboard {
 	padding-top: 1rem;
 	padding-left: 1rem;
@@ -16,4 +21,19 @@ html {
 .PropertyList {
 	width: 50rem;
 	height: 60rem;
+}
+
+.CreatePropertyForm {
+	display: inline-flex;
+	flex-direction: column;
+	padding: 1rem;
+
+	article {
+		display: flex;
+		flex-direction: row;
+
+		section {
+			margin-right: 1rem;
+		}
+	}
 }
