@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { propertyApi } from '../api';
 import history from '../router';
 import IProperty from '../interfaces/Property';
 import { DataTable } from 'primereact/datatable';
@@ -11,20 +11,9 @@ const PropertyList = ({ filterByAddress }: { filterByAddress: string }) => {
 	const [properties, setProperties] = useState<IProperty[]>([]);
 
 	useEffect(() => {
-		const fetchProperties = async () => {
-			try {
-				const response = await axios.get<IProperty[]>('/api/property');
-
-				if (response.status === 200 && response.data)
-					setProperties(response.data);
-			} catch (err) {
-				console.error('Login connection error: ', err);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		fetchProperties();
+		propertyApi.fetchPropertyList()
+			.then((propertyList) => propertyList && setProperties(propertyList))
+			.finally(() => setIsLoading(false));
 	}, []);
 
 	return (<div className="PropertyList">
