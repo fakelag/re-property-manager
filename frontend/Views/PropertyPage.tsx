@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import router from '../router';
 import IProperty from '../interfaces/Property';
+import { propertyApi } from '../api';
 import { match as MatchParams } from 'react-router';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
@@ -15,31 +15,14 @@ const PropertyPage = ({ match }: { match: MatchParams<{ propertyId: string }> })
 	const [property, setProperty] = useState<IProperty | null>(null);
 
 	useEffect(() => {
-		(async () => {
-			try {
-				const response = await axios.get<IProperty>(`/api/property/${match.params.propertyId}`);
-
-				if (response.status === 200 && response.data)
-					setProperty(response.data);
-			} catch (err) {
-				console.error(err);
-			} finally {
-				setIsLoading(false);
-			}
-		})();
+		propertyApi.fetchProperty(match.params.propertyId)
+			.then((data) => setProperty(data))
+			.finally(() => setIsLoading(false));
 	}, []);
 
-	const deleteProperty = async () => {
-		try {
-			const response = await axios.delete(`/api/property/${match.params.propertyId}`);
-
-			if (response.status === 200) {
-				setDeleteDialog(false);
-				router.push('/');
-			}
-		} catch (err) {
-			console.error(err);
-		}
+	const deleteProperty = () => {
+		propertyApi.deleteProperty(match.params.propertyId)
+			.then((success) => success && router.push('/'));
 	};
 
 	return (<div className="PropertyPage">

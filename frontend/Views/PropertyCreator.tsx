@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import IProperty from '../interfaces/Property';
+import { propertyApi } from '../api';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
+import IProperty from '../interfaces/Property';
 
 const PropertyCreator = () => {
-	const [property, setProperty] = useState<Partial<IProperty>>({
+	const [property, setProperty] = useState<IProperty>({
 		address: '',
 		apartmentType: '',
 		city: '',
@@ -15,24 +15,19 @@ const PropertyCreator = () => {
 		id: '',
 		livingArea: 30.0,
 		maintenanceFee: 50.0,
+		owner: '',
 		repairFee: 0.0,
 		sellingPrice: 90000.0,
 		zip: '',
 	});
 
 	const createOrUpdateProperty = async () => {
-		try {
-			const response = property.id
-				? await axios.post<IProperty>('/api/property', { id: property.id, propertyIn: property })
-				: await axios.put<IProperty>('/api/property', property);
-
-			if ((response.status === 200 // Ok
-				|| response.status === 201) // Created
-				&& response.data) {
-				setProperty(response.data);
-			}
-		} catch (err) {
-			console.error(err);
+		if (property.id) {
+			propertyApi.updateProperty(property.id, property)
+				.then((data) => data && setProperty(data));
+		} else {
+			propertyApi.createProperty(property)
+				.then((data) => data && setProperty(data));
 		}
 	};
 

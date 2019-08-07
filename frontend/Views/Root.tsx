@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { userApi } from '../api';
 import App from './App';
 import Login from './Login';
 
@@ -12,35 +12,14 @@ const Root = () => {
 	const [hasFetchedLogin, setHasFetchedLogin] = useState(false);
 
 	if (!hasFetchedLogin) {
-		(async () => {
-			try {
-				const response = await axios.get<{
-					id: string;
-					username: string;
-				}>('/api/user');
-
-				if (response.status === 200 && response.data)
-					setLoginData(response.data);
-			} catch (err) {
-				console.error('Prelogin connection error: ', err);
-			} finally {
-				setHasFetchedLogin(true);
-			}
-		})();
+		userApi.fetchLogin()
+			.then((fetchData) => fetchData && setLoginData(fetchData))
+			.finally(() => setHasFetchedLogin(true));
 	}
 
 	const sendLogin = async (username: string, password: string) => {
-		try {
-			const response = await axios.post<{
-				id: string;
-				username: string;
-			}>('/api/user/login', { username, password });
-
-			if (response.status === 200 && response.data)
-				setLoginData(response.data);
-		} catch (err) {
-			console.error('Login connection error: ', err);
-		}
+		userApi.login(username, password)
+			.then((fetchData) => fetchData && setLoginData(fetchData));
 	};
 
 	return (<>
