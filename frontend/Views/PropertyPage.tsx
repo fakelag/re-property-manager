@@ -53,6 +53,7 @@ const PropertyPage = ({ match }: { match: MatchParams<{ propertyId: string }> })
 				>
 					<Column field="id" header="Id" />
 					<Column field="participant.fullName" header="Participant Name" />
+					<Column field="participant.email" header="Participant Email" />
 				</DataTable>
 				<Dialog
 					header="Delete the property"
