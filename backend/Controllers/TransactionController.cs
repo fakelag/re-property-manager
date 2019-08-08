@@ -51,7 +51,7 @@ namespace backend.Controllers
 		[Authenticate]
 		[Route("many")]
 		[HttpPut]
-		public ActionResult<Transaction[]> CreateMany(Transaction[] transactionList)
+		public ActionResult<Transaction[]> CreateMany([FromBody] Transaction[] transactionList)
 		{
 			var user = (User) Request.HttpContext.Items["user"];
 			return _transactionService.CreateMany(user.Id, transactionList);
