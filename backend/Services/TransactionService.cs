@@ -32,8 +32,12 @@ namespace backend.Services
 		{
 			Transaction[] insertList = new Transaction[transactionList.Length];
 
+			if (transactionList.Length == 0)
+				return insertList;
+
 			for (var i = 0; i < transactionList.Length; ++i)
 			{
+				insertList[i] = transactionList[i];
 				insertList[i].Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
 				insertList[i].Owner = userId;
 			}
