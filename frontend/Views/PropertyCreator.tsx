@@ -10,14 +10,14 @@ const PropertyCreator = () => {
 		apartmentType: '',
 		city: '',
 		contracts: [],
-		debtFreePrice: 89000.0,
-		financeFee: 90.0,
+		debtFreePrice: 8900000,
+		financeFee: 9000,
 		id: '',
 		livingArea: 30.0,
-		maintenanceFee: 50.0,
+		maintenanceFee: 5000,
 		owner: '',
 		repairFee: 0.0,
-		sellingPrice: 90000.0,
+		sellingPrice: 9000000,
 		zip: '',
 	});
 
@@ -88,20 +88,29 @@ const PropertyCreator = () => {
 			</section>
 			<section>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
-					<InputText
-						id="input-address"
-						type="text"
-						value={property.debtFreePrice}
-						onChange={(e) => {
-								try {
-									setProperty({ ...property, debtFreePrice: Number.parseFloat(e.currentTarget.value) });
-								} catch (err) {
-									console.error(err);
+					<div className="p-inputgroup">
+						<span className="p-inputgroup-addon">$</span>
+						<InputText
+							id="input-address"
+							type="text"
+							value={property.debtFreePrice / 100.0}
+							onChange={(e) => {
+									try {
+										setProperty({
+											...property,
+											debtFreePrice: e.currentTarget.value
+												? Number.parseInt(e.currentTarget.value, 10) * 100
+												: 0,
+										});
+									} catch (err) {
+										console.error(err);
+									}
 								}
 							}
-						}
-					/>
-					<label htmlFor="input-address">Debt Free Price</label>
+						/>
+						<span className="p-inputgroup-addon">.00</span>
+						<label htmlFor="input-address">Debt Free Price</label>
+					</div>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
 					<InputText
