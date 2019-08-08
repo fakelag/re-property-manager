@@ -5,6 +5,7 @@ namespace backend.Models
 		public string Properties { get; set; }
 		public string Invoices { get; set; }
 		public string Users { get; set; }
+		public string Transactions { get; set; }
 	}
 
 	public interface IDatabaseSettings

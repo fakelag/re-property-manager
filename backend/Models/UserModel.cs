@@ -17,5 +17,9 @@ namespace backend.Models
 		[BsonElement("password")]
 		[JsonIgnore]
 		public string Password { get; set; }
+
+		/*
+			todo: bank account authentication fields...
+		*/
 	}
 }
