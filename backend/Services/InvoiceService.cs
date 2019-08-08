@@ -20,7 +20,7 @@ namespace backend.Services
 		public Invoice Get(string id, string userId) => _invoices.Find(inv => inv.Id == id && inv.Owner == userId).FirstOrDefault();
 		public List<Invoice> ListByUser(string userId) => _invoices.Find(inv => inv.Owner == userId).ToList();
 
-		public Invoice Create(string ownerId, Decimal amount,
+		public Invoice Create(string ownerId, int amount,
 			string currency, DateTime dueDate, string description = "",
 			string linkedContract = null)
 		{
@@ -41,7 +41,7 @@ namespace backend.Services
 			newInvoice.Currency = currency;
 			newInvoice.Description = description;
 			newInvoice.DueDate = dueDate;
-			newInvoice.AmountPaid = 0.0M;
+			newInvoice.AmountPaid = 0;
 			newInvoice.Owner = ownerId;
 			newInvoice.Contract = linkedContract;
 

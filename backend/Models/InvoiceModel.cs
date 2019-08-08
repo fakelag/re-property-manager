@@ -9,7 +9,7 @@ namespace backend.Models
 	{
 		public Invoice()
 		{
-			AmountPaid = 0.0M;
+			AmountPaid = 0;
 		}
 
 		[BsonId]
@@ -22,11 +22,11 @@ namespace backend.Models
 
 		[BsonElement("amount")]
 		[JsonProperty("amount")]
-		public Decimal Amount { get; set; }
+		public int Amount { get; set; }
 
 		[BsonIgnore]
 		[JsonProperty("amountPaid")]
-		public Decimal AmountPaid { get; set; }
+		public int AmountPaid { get; set; }
 
 		[BsonElement("currency")]
 		[JsonProperty("currency")]

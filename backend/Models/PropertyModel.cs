@@ -35,27 +35,27 @@ namespace backend.Models
 		[BsonElement("debtFreePrice")]
 		[JsonProperty("debtFreePrice")]
 		[JsonRequired]
-		public Decimal DebtFreePrice { get; set; }
+		public int DebtFreePrice { get; set; }
 
 		[BsonElement("sellingPrice")]
 		[JsonProperty("sellingPrice")]
 		[JsonRequired]
-		public Decimal SellingPrice { get; set; }
+		public int SellingPrice { get; set; }
 
 		[BsonElement("maintenanceFee")]
 		[JsonProperty("maintenanceFee")]
 		[JsonRequired]
-		public Decimal MaintenanceFee { get; set; }
+		public int MaintenanceFee { get; set; }
 
 		[BsonElement("financeFee")]
 		[JsonProperty("financeFee")]
 		[JsonRequired]
-		public Decimal FinanceFee { get; set; }
+		public int FinanceFee { get; set; }
 
 		[BsonElement("repairFee")]
 		[JsonProperty("repairFee")]
 		[JsonRequired]
-		public Decimal RepairFee { get; set; }
+		public int RepairFee { get; set; }
 
 		[BsonElement("apartmentType")]
 		[JsonProperty("apartmentType")]
