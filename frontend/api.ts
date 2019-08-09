@@ -1,7 +1,7 @@
 import axios from 'axios';
 import IProperty from './interfaces/Property';
 import ILogin from './interfaces/Login';
-// import IContract from './interfaces/Contract';
+import IContract from './interfaces/Contract';
 
 const fetchPropertyList = async (): Promise<IProperty[] | null> => {
 	try {
@@ -71,6 +71,22 @@ const deleteProperty = async (propertyId: string): Promise<boolean> => {
 	return false;
 };
 
+const addContract = async (propertyId: string, contract: IContract): Promise<IContract | null> => {
+	try {
+		const response = await axios.put<IContract>('/api/contract', { propertyId, contract });
+
+		if ((response.status === 200 // Ok
+			|| response.status === 201) // Created
+			&& response.data) {
+			return response.data;
+		}
+	} catch (err) {
+		console.error(err);
+	}
+
+	return null;
+};
+
 const fetchLogin = async (): Promise<ILogin | null> => {
 	try {
 		const response = await axios.get<ILogin>('/api/user');
@@ -104,6 +120,10 @@ export const propertyApi = {
 	fetchPropertyList,
 	updateProperty,
 };
+
+export const contractApi = {
+	addContract,
+}
 
 export const userApi = {
 	fetchLogin,
