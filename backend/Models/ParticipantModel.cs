@@ -6,10 +6,6 @@ namespace backend.Models
 {
 	public class ContractParticipant
 	{
-		[BsonId]
-		[BsonRepresentation(BsonType.ObjectId)]
-		public string Id { get; set; }
-
 		[BsonElement("fullName")]
 		[JsonProperty("fullName")]
 		public string FullName { get; set; }
