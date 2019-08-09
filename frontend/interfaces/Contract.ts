@@ -2,10 +2,11 @@ export default interface IContract {
 	id: string;
 	property: string;
 	participant: {
-		id: string;
+		address: string;
 		fullName: string;
 		email: string;
 		phone: string;
+		ssn: string;
 	};
 	beginDate: Date;
 	endDate?: Date;
