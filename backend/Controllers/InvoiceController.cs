@@ -39,6 +39,15 @@ namespace backend.Controllers
 		}
 
 		[Authenticate]
+		[Route("forcontract")]
+		[HttpGet]
+		public ActionResult<List<Invoice>> ListForContract(string contractId)
+		{
+			var user = (User) Request.HttpContext.Items["user"];
+			return _invoiceService.ListByContract(user.Id, contractId);
+		}
+
+		[Authenticate]
 		[HttpGet("{id:length(24)}", Name = "GetInvoice")]
 		public ActionResult<Invoice> Get(string id)
 		{

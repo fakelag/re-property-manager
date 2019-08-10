@@ -28,6 +28,10 @@ namespace backend.Services
 		public List<Invoice> ListByUser(string userId) =>
 			UpdateAmountsPaid(_invoices.Find(inv => inv.Owner == userId).ToList(), _transactionService.ListByUser(userId));
 
+		public List<Invoice> ListByContract(string userId, string contractId) =>
+			UpdateAmountsPaid(_invoices.Find(inv => inv.Owner == userId && inv.Contract == contractId).ToList(),
+				_transactionService.ListByUser(userId));
+
 		public Invoice Create(string ownerId, int amount,
 			string currency, DateTime dueDate, string description = "",
 			string linkedContract = null)
