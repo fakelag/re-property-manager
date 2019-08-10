@@ -66,30 +66,30 @@ const PropertyCreator = () => {
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
 					<InputText
-						id="input-address"
+						id="input-apartment-type"
 						type="text"
 						value={property.apartmentType}
 						onChange={(e) => setProperty({ ...property, apartmentType: e.currentTarget.value })}
 					/>
-					<label htmlFor="input-address">Apartment Type</label>
+					<label htmlFor="input-apartment-type">Apartment Type</label>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
 					<InputText
-						id="input-address"
+						id="input-apartment-type"
 						type="text"
 						value={property.city}
 						onChange={(e) => setProperty({ ...property, city: e.currentTarget.value })}
 					/>
-					<label htmlFor="input-address">City</label>
+					<label htmlFor="input-apartment-type">City</label>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
 					<InputText
-						id="input-address"
+						id="input-apartment-zip"
 						type="text"
 						value={property.zip}
 						onChange={(e) => setProperty({ ...property, zip: e.currentTarget.value })}
 					/>
-					<label htmlFor="input-address">Zip Code</label>
+					<label htmlFor="input-apartment-zip">Zip Code</label>
 				</span>
 			</section>
 			<section>
@@ -97,7 +97,7 @@ const PropertyCreator = () => {
 					<div className="p-inputgroup">
 						<span className="p-inputgroup-addon">€</span>
 						<InputText
-							id="input-address"
+							id="input-apartment-debtfree-price"
 							type="text"
 							value={property.debtFreePrice / 100.0}
 							onChange={(e) => {
@@ -115,14 +115,14 @@ const PropertyCreator = () => {
 							}
 						/>
 						<span className="p-inputgroup-addon">.00</span>
-						<label htmlFor="input-address">Debt Free Price</label>
+						<label htmlFor="input-apartment-debtfree-price">Debt Free Price</label>
 					</div>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
 					<div className="p-inputgroup">
 						<span className="p-inputgroup-addon">€</span>
 						<InputText
-							id="input-address"
+							id="input-apartment-selling-price"
 							type="text"
 							value={property.sellingPrice / 100.0}
 							onChange={(e) => {
@@ -140,14 +140,14 @@ const PropertyCreator = () => {
 							}
 						/>
 						<span className="p-inputgroup-addon">.00</span>
-						<label htmlFor="input-address">Selling Price</label>
+						<label htmlFor="input-apartment-selling-price">Selling Price</label>
 					</div>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
 					<div className="p-inputgroup">
 						<span className="p-inputgroup-addon">€</span>
 						<InputText
-							id="input-address"
+							id="input-apartment-financefee"
 							type="text"
 							value={property.financeFee / 100.0}
 							onChange={(e) => {
@@ -165,14 +165,14 @@ const PropertyCreator = () => {
 							}
 						/>
 						<span className="p-inputgroup-addon">.00</span>
-						<label htmlFor="input-address">Finance Fee</label>
+						<label htmlFor="input-apartment-financefee">Finance Fee</label>
 					</div>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
 					<div className="p-inputgroup">
 						<span className="p-inputgroup-addon">€</span>
 						<InputText
-							id="input-address"
+							id="input-apartment-maintenancefee"
 							type="text"
 							value={property.maintenanceFee / 100.0}
 							onChange={(e) => {
@@ -190,14 +190,14 @@ const PropertyCreator = () => {
 							}
 						/>
 						<span className="p-inputgroup-addon">.00</span>
-						<label htmlFor="input-address">Maintenance Fee</label>
+						<label htmlFor="input-apartment-maintenancefee">Maintenance Fee</label>
 					</div>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
 					<div className="p-inputgroup">
 						<span className="p-inputgroup-addon">€</span>
 						<InputText
-							id="input-address"
+							id="input-apartment-repairfee"
 							type="text"
 							value={property.repairFee / 100.0}
 							onChange={(e) => {
@@ -215,7 +215,7 @@ const PropertyCreator = () => {
 							}
 						/>
 						<span className="p-inputgroup-addon">.00</span>
-						<label htmlFor="input-address">Repair Fee</label>
+						<label htmlFor="input-apartment-repairfee">Repair Fee</label>
 					</div>
 				</span>
 			</section>
