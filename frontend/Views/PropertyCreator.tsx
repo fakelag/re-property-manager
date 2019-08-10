@@ -5,29 +5,32 @@ import { Button } from 'primereact/button';
 import IProperty from '../interfaces/Property';
 
 const PropertyCreator = () => {
+	const [isError, setIsError] = useState(false);
 	const [property, setProperty] = useState<IProperty>({
 		address: '',
 		apartmentType: '',
 		city: '',
 		contracts: [],
-		debtFreePrice: 89000.0,
-		financeFee: 90.0,
+		debtFreePrice: 8900000,
+		financeFee: 9000,
 		id: '',
 		livingArea: 30.0,
-		maintenanceFee: 50.0,
+		maintenanceFee: 5000,
 		owner: '',
 		repairFee: 0.0,
-		sellingPrice: 90000.0,
+		sellingPrice: 9000000,
 		zip: '',
 	});
 
 	const createOrUpdateProperty = async () => {
 		if (property.id) {
 			propertyApi.updateProperty(property.id, property)
-				.then((data) => data && setProperty(data));
+				.then((data) => setProperty(data))
+				.catch(() => setIsError(true));
 		} else {
 			propertyApi.createProperty(property)
-				.then((data) => data && setProperty(data));
+				.then((data) => setProperty(data))
+				.catch(() => setIsError(true));
 		}
 	};
 
@@ -36,6 +39,9 @@ const PropertyCreator = () => {
 		event.stopPropagation();
 		createOrUpdateProperty();
 	};
+
+	if (isError)
+		return (<>Network Error</>);
 
 	return (<form className="CreatePropertyForm" onSubmit={handleSubmit}>
 		<article>
@@ -60,112 +66,157 @@ const PropertyCreator = () => {
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
 					<InputText
-						id="input-address"
+						id="input-apartment-type"
 						type="text"
 						value={property.apartmentType}
 						onChange={(e) => setProperty({ ...property, apartmentType: e.currentTarget.value })}
 					/>
-					<label htmlFor="input-address">Apartment Type</label>
+					<label htmlFor="input-apartment-type">Apartment Type</label>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
 					<InputText
-						id="input-address"
+						id="input-apartment-type"
 						type="text"
 						value={property.city}
 						onChange={(e) => setProperty({ ...property, city: e.currentTarget.value })}
 					/>
-					<label htmlFor="input-address">City</label>
+					<label htmlFor="input-apartment-type">City</label>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
 					<InputText
-						id="input-address"
+						id="input-apartment-zip"
 						type="text"
 						value={property.zip}
 						onChange={(e) => setProperty({ ...property, zip: e.currentTarget.value })}
 					/>
-					<label htmlFor="input-address">Zip Code</label>
+					<label htmlFor="input-apartment-zip">Zip Code</label>
 				</span>
 			</section>
 			<section>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
-					<InputText
-						id="input-address"
-						type="text"
-						value={property.debtFreePrice}
-						onChange={(e) => {
-								try {
-									setProperty({ ...property, debtFreePrice: Number.parseFloat(e.currentTarget.value) });
-								} catch (err) {
-									console.error(err);
+					<div className="p-inputgroup">
+						<span className="p-inputgroup-addon">€</span>
+						<InputText
+							id="input-apartment-debtfree-price"
+							type="text"
+							value={property.debtFreePrice / 100.0}
+							onChange={(e) => {
+									try {
+										setProperty({
+											...property,
+											debtFreePrice: e.currentTarget.value
+												? Number.parseInt(e.currentTarget.value, 10) * 100
+												: 0,
+										});
+									} catch (err) {
+										console.error(err);
+									}
 								}
 							}
-						}
-					/>
-					<label htmlFor="input-address">Debt Free Price</label>
+						/>
+						<span className="p-inputgroup-addon">.00</span>
+						<label htmlFor="input-apartment-debtfree-price">Debt Free Price</label>
+					</div>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
-					<InputText
-						id="input-address"
-						type="text"
-						value={property.sellingPrice}
-						onChange={(e) => {
-								try {
-									setProperty({ ...property, sellingPrice: Number.parseFloat(e.currentTarget.value) });
-								} catch (err) {
-									console.error(err);
+					<div className="p-inputgroup">
+						<span className="p-inputgroup-addon">€</span>
+						<InputText
+							id="input-apartment-selling-price"
+							type="text"
+							value={property.sellingPrice / 100.0}
+							onChange={(e) => {
+									try {
+										setProperty({
+											...property,
+											sellingPrice: e.currentTarget.value
+												? Number.parseInt(e.currentTarget.value, 10) * 100
+												: 0,
+										});
+									} catch (err) {
+										console.error(err);
+									}
 								}
 							}
-						}
-					/>
-					<label htmlFor="input-address">Selling Price</label>
+						/>
+						<span className="p-inputgroup-addon">.00</span>
+						<label htmlFor="input-apartment-selling-price">Selling Price</label>
+					</div>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
-					<InputText
-						id="input-address"
-						type="text"
-						value={property.financeFee}
-						onChange={(e) => {
-								try {
-									setProperty({ ...property, financeFee: Number.parseFloat(e.currentTarget.value) });
-								} catch (err) {
-									console.error(err);
+					<div className="p-inputgroup">
+						<span className="p-inputgroup-addon">€</span>
+						<InputText
+							id="input-apartment-financefee"
+							type="text"
+							value={property.financeFee / 100.0}
+							onChange={(e) => {
+									try {
+										setProperty({
+											...property,
+											financeFee: e.currentTarget.value
+												? Number.parseInt(e.currentTarget.value, 10) * 100
+												: 0,
+										});
+									} catch (err) {
+										console.error(err);
+									}
 								}
 							}
-						}
-					/>
-					<label htmlFor="input-address">Finance Fee</label>
+						/>
+						<span className="p-inputgroup-addon">.00</span>
+						<label htmlFor="input-apartment-financefee">Finance Fee</label>
+					</div>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
-					<InputText
-						id="input-address"
-						type="text"
-						value={property.maintenanceFee}
-						onChange={(e) => {
-								try {
-									setProperty({ ...property, maintenanceFee: Number.parseFloat(e.currentTarget.value) });
-								} catch (err) {
-									console.error(err);
+					<div className="p-inputgroup">
+						<span className="p-inputgroup-addon">€</span>
+						<InputText
+							id="input-apartment-maintenancefee"
+							type="text"
+							value={property.maintenanceFee / 100.0}
+							onChange={(e) => {
+									try {
+										setProperty({
+											...property,
+											maintenanceFee: e.currentTarget.value
+												? Number.parseInt(e.currentTarget.value, 10) * 100
+												: 0,
+										});
+									} catch (err) {
+										console.error(err);
+									}
 								}
 							}
-						}
-					/>
-					<label htmlFor="input-address">Maintenance Fee</label>
+						/>
+						<span className="p-inputgroup-addon">.00</span>
+						<label htmlFor="input-apartment-maintenancefee">Maintenance Fee</label>
+					</div>
 				</span>
 				<span className="p-float-label" style={{ marginBottom: '1rem' }}>
-					<InputText
-						id="input-address"
-						type="text"
-						value={property.repairFee}
-						onChange={(e) => {
-								try {
-									setProperty({ ...property, repairFee: Number.parseFloat(e.currentTarget.value) });
-								} catch (err) {
-									console.error(err);
+					<div className="p-inputgroup">
+						<span className="p-inputgroup-addon">€</span>
+						<InputText
+							id="input-apartment-repairfee"
+							type="text"
+							value={property.repairFee / 100.0}
+							onChange={(e) => {
+									try {
+										setProperty({
+											...property,
+											repairFee: e.currentTarget.value
+												? Number.parseInt(e.currentTarget.value, 10) * 100
+												: 0,
+										});
+									} catch (err) {
+										console.error(err);
+									}
 								}
 							}
-						}
-					/>
-					<label htmlFor="input-address">Repait Fee</label>
+						/>
+						<span className="p-inputgroup-addon">.00</span>
+						<label htmlFor="input-apartment-repairfee">Repair Fee</label>
+					</div>
 				</span>
 			</section>
 		</article>

@@ -18,22 +18,67 @@ label {
 	padding-right: 1rem;
 }
 
+.PropertyPage {
+	section {
+		margin-bottom: 1rem;
+
+		button {
+			margin-right: 1rem;
+		}
+	}
+}
+
 .PropertyList {
 	width: 50rem;
 	height: 60rem;
 }
 
-.CreatePropertyForm {
+.CreatePropertyForm, .CreateContractForm {
+	width: 100%;
 	display: inline-flex;
 	flex-direction: column;
 	padding: 1rem;
 
 	article {
+		margin-bottom: 1rem;
+		justify-content: center;
 		display: flex;
 		flex-direction: row;
 
 		section {
 			margin-right: 1rem;
+		}
+
+		button {
+			margin-right: 1rem;
+		}
+	}
+}
+
+.ContractCreatorCard {
+	width: 55rem;
+
+	.p-card-body {
+		.p-card-content {
+			section {
+				display: flex;
+				margin-top: 1.5rem;
+				flex-wrap: wrap;
+
+				.p-float-label {
+					margin-right: 1rem;
+					margin-bottom: 1rem;
+				}
+
+				textarea {
+					width: 100%;
+					margin-bottom: 1rem;
+				}
+			}
+
+			.p-card-subtitle:not(:first-child) {
+				margin-top: 1rem;
+			}
 		}
 	}
 }

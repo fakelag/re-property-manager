@@ -2,9 +2,24 @@ export default interface IContract {
 	id: string;
 	property: string;
 	participant: {
-		id: string;
+		address: string;
 		fullName: string;
 		email: string;
 		phone: string;
+		ssn: string;
 	};
+	beginDate: Date;
+	endDate: Date | null;
+	paymentAmount: number;
+	paymentDateOfMonth: number;
+	paymentRaise?: {
+		costIndexDate: Date;
+	};
+	securityDeposit?: {
+		depositAmount: Date;
+		depositDate: Date;
+	};
+	additionalConditions: string;
+	additionalEquipment: string;
+	signDate?: Date;
 }

@@ -11,7 +11,7 @@ namespace backend.Controllers
 	{
 		public string description;
 		public string linkedContract;
-		public Decimal amount;
+		public int amount;
 		public DateTime dueDate;
 	}
 

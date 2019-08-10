@@ -75,17 +75,23 @@ namespace backend.Services
 			return property.Contracts[index];
 		}
 
-        public void Remove(Property property, string id)
+		public bool Remove(string userId, string propertyId, string id)
 		{
+			var property = _properties.Find(prop => prop.Owner == userId && prop.Id == propertyId).FirstOrDefault();
+
+			if (property == null)
+				return false;
+
 			var index = property.Contracts.FindIndex(rc => rc.Id == id);
 
 			if (index == -1)
-				return;
+				return false;
 
 			property.Contracts.RemoveAt(index);
 
 			var update = Builders<Property>.Update.Set("contracts", property.Contracts);
 			_properties.FindOneAndUpdate<Property>(prop => prop.Id == property.Id, update);
+			return true;
 		}
     }
 }
