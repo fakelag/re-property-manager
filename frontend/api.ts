@@ -10,7 +10,7 @@ const fetchPropertyList = async (): Promise<IProperty[]> => {
 		if (response.status !== 200)
 			throw new Error(`Invalid status code: , ${response.status}`);
 
-			return response.data;
+		return response.data;
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -24,7 +24,7 @@ const fetchProperty = async (propertyId: string): Promise<IProperty> => {
 		if (response.status !== 200)
 			throw new Error(`Invalid status code: , ${response.status}`);
 
-			return response.data;
+		return response.data;
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -52,7 +52,7 @@ const updateProperty = async (propertyId: string, property: Omit<IProperty, 'id'
 		if (response.status !== 200)
 			throw new Error(`Invalid status code: , ${response.status}`);
 
-			return response.data;
+		return response.data;
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -71,7 +71,18 @@ const deleteProperty = async (propertyId: string): Promise<void> => {
 	}
 };
 
-	return false;
+const fetchContract = async (contractId: string): Promise<IContract> => {
+	try {
+		const response = await axios.get<IContract>(`/api/contract/${contractId}`);
+
+		if (response.status !== 200)
+			throw new Error(`Invalid status code: , ${response.status}`);
+
+		return response.data;
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
 };
 
 const createContract = async (propertyId: string, contract: IContract): Promise<IContract> => {
@@ -85,7 +96,7 @@ const createContract = async (propertyId: string, contract: IContract): Promise<
 	} catch (err) {
 		console.error(err);
 		throw err;
-		}
+	}
 };
 
 const updateContract = async (propertyId: string, contractId: string, contract: IContract): Promise<IContract> => {
@@ -102,7 +113,16 @@ const updateContract = async (propertyId: string, contractId: string, contract: 
 	}
 };
 
-	return null;
+const deleteContract = async (propertyId: string, contractId: string): Promise<void> => {
+	try {
+		const response = await axios.delete('/api/contract', { data: { propertyId, contractId } });
+
+		if (response.status !== 200)
+			throw new Error(`Invalid status code: , ${response.status}`);
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
 };
 
 const fetchLogin = async (): Promise<ILogin> => {
@@ -112,7 +132,7 @@ const fetchLogin = async (): Promise<ILogin> => {
 		if (response.status !== 200)
 			throw new Error(`Invalid status code: , ${response.status}`);
 
-			return response.data;
+		return response.data;
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -126,7 +146,7 @@ const login = async (username: string, password: string): Promise<ILogin> => {
 		if (response.status !== 200)
 			throw new Error(`Invalid status code: , ${response.status}`);
 
-			return response.data;
+		return response.data;
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -142,8 +162,11 @@ export const propertyApi = {
 };
 
 export const contractApi = {
-	addContract,
-}
+	createContract,
+	deleteContract,
+	fetchContract,
+	updateContract,
+};
 
 export const userApi = {
 	fetchLogin,
