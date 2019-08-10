@@ -5,6 +5,7 @@ import { Button } from 'primereact/button';
 import IProperty from '../interfaces/Property';
 
 const PropertyCreator = () => {
+	const [isError, setIsError] = useState(false);
 	const [property, setProperty] = useState<IProperty>({
 		address: '',
 		apartmentType: '',
@@ -24,10 +25,12 @@ const PropertyCreator = () => {
 	const createOrUpdateProperty = async () => {
 		if (property.id) {
 			propertyApi.updateProperty(property.id, property)
-				.then((data) => data && setProperty(data));
+				.then((data) => setProperty(data))
+				.catch(() => setIsError(true));
 		} else {
 			propertyApi.createProperty(property)
-				.then((data) => data && setProperty(data));
+				.then((data) => setProperty(data))
+				.catch(() => setIsError(true));
 		}
 	};
 
@@ -36,6 +39,9 @@ const PropertyCreator = () => {
 		event.stopPropagation();
 		createOrUpdateProperty();
 	};
+
+	if (isError)
+		return (<>Network Error</>);
 
 	return (<form className="CreatePropertyForm" onSubmit={handleSubmit}>
 		<article>

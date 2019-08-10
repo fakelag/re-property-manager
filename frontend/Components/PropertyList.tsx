@@ -8,11 +8,13 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 
 const PropertyList = ({ filterByAddress }: { filterByAddress: string }) => {
 	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [isError, setIsError] = useState<boolean>(false);
 	const [properties, setProperties] = useState<IProperty[]>([]);
 
 	useEffect(() => {
 		propertyApi.fetchPropertyList()
-			.then((propertyList) => propertyList && setProperties(propertyList))
+			.then((propertyList) => setProperties(propertyList))
+			.catch(() => setIsError(true))
 			.finally(() => setIsLoading(false));
 	}, []);
 
@@ -20,9 +22,11 @@ const PropertyList = ({ filterByAddress }: { filterByAddress: string }) => {
 		{isLoading
 			&& <ProgressSpinner />
 			|| <DataTable
-				value={properties.filter((prop) =>
-					!filterByAddress
-					|| prop.address.toUpperCase().indexOf(filterByAddress.toUpperCase()) !== -1)}
+				value={isError
+					? [{ address: 'Network error' }]
+					: properties.filter((prop) =>
+						!filterByAddress
+						|| prop.address.toUpperCase().indexOf(filterByAddress.toUpperCase()) !== -1)}
 				selectionMode="single"
 				onRowSelect={(e: { data: { id: string } }) => history.push(`/property/${e.data.id}`)}
 			>
