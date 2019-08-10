@@ -25,7 +25,7 @@ const Header = ({ searchPlaceholder, onSearch }:
 						{
 							command: (e: { originalEvent: Event }): void => {
 								if (e.originalEvent.type === 'click') {
-									router.push('/createproperty');
+									router.push('/propertysettings');
 								}
 							},
 							icon: 'pi pi-fw pi-file',

@@ -3,6 +3,7 @@ import { Router, Route, Switch } from 'react-router';
 import history from '../router';
 import PropertyPage from './PropertyPage';
 import PropertyCreator from './PropertyCreator';
+import ContractCreator from './ContractCreator';
 import Header from '../Components/Header';
 import PropertyList from '../Components/PropertyList';
 
@@ -14,7 +15,7 @@ const App = () => {
 			searchPlaceholder="Search properties..."
 			onSearch={(filterString: string) => setSearchString(filterString)}
 		/>
-		<section className="Dashboard">
+		<article className="Dashboard">
 			<Router history={history}>
 				<Switch>
 					<Route
@@ -24,8 +25,13 @@ const App = () => {
 					/>
 					<Route
 						exact
-						path="/createproperty"
+						path="/propertysettings"
 						component={PropertyCreator}
+					/>
+					<Route
+						exact
+						path="/contractsettings/:propertyId/:contractId?"
+						component={ContractCreator}
 					/>
 					<Route
 						path="*"
@@ -33,7 +39,7 @@ const App = () => {
 					/>
 				</Switch>
 			</Router>
-		</section>
+		</article>
 	</>);
 };
 
