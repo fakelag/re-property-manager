@@ -35,7 +35,7 @@ namespace backend.Models
 
 		[BsonElement("endDate")]
 		[JsonProperty("endDate")]
-		public DateTime EndDate { get; set; } // null = infinite
+		public DateTime? EndDate { get; set; } // null = infinite
 
 		[BsonElement("paymentAmount")]
 		[JsonProperty("paymentAmount")]
