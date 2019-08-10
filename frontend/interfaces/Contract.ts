@@ -9,7 +9,7 @@ export default interface IContract {
 		ssn: string;
 	};
 	beginDate: Date;
-	endDate?: Date;
+	endDate: Date | null;
 	paymentAmount: number;
 	paymentDateOfMonth: number;
 	paymentRaise?: {
