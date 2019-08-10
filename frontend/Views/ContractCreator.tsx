@@ -216,7 +216,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 					</span>
 					<span className="p-float-label">
 						<Calendar
-							value={contract.beginDate}
+							value={new Date(contract.beginDate)}
 							dateFormat="dd.mm.yy"
 							onChange={(e) => {
 								setContract({
@@ -232,7 +232,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 					</span>
 					<span className="p-float-label">
 						<Calendar
-							value={contract.endDate ? contract.endDate : undefined}
+							value={contract.endDate ? new Date(contract.endDate) : undefined}
 							dateFormat="dd.mm.yy"
 							onChange={(e) => {
 								setContract({
