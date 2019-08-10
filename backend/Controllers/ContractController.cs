@@ -21,6 +21,12 @@ namespace backend.Controllers
 		public RentalContract contract;
 	}
 
+	public class DeleteContractFields
+	{
+		public string propertyId;
+		public string contractId;
+	}
+
 	[Route("api/[controller]")]
 	[ApiController]
 	public class ContractController : ControllerBase
@@ -103,6 +109,23 @@ namespace backend.Controllers
 
 			_contractService.Update(property, updateContract.contract.Id, updateContract.contract);
 			return updateContract.contract;
+		}
+
+		[Authenticate]
+		[HttpDelete]
+		public ActionResult Delete([FromBody] DeleteContractFields deleteFields)
+		{
+			var user = (User) Request.HttpContext.Items["user"];
+
+			RentalContract contract = _contractService.Get(user.Id, deleteFields.contractId);
+
+			if (contract == null)
+				return NotFound();
+
+			if (!_contractService.Remove(user.Id, deleteFields.propertyId, contract.Id))
+				return NotFound();
+
+			return Ok();
 		}
 	}
 }
