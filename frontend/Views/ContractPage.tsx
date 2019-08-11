@@ -53,8 +53,8 @@ const ContractPage = ({ match }: { match: MatchParams<{ propertyId: string, cont
 								amountPaid: <p>{inv.amountPaid / 100} &euro;</p>,
 							}))}
 							selectionMode="single"
-							// onRowSelect={(e: { originalEvent: Event; data: IContract; type: string; }) =>
-							// 	router.push(`/contract/${property.id}/${e.data.id}`)}
+							onRowSelect={(e: { originalEvent: Event; data: IInvoice; type: string; }) =>
+								router.push(`/invoice/${e.data.id}`)}
 						>
 							<Column field="id" header="Invoice Id" />
 							<Column field="amount" header="Amount" />
