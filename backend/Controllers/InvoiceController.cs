@@ -7,12 +7,17 @@ using System.Collections.Generic;
 
 namespace backend.Controllers
 {
-	public class InvoiceCreationFields
+	public class InvoiceFields
 	{
 		public string description;
 		public string linkedContract;
 		public int amount;
 		public DateTime dueDate;
+	}
+
+	public class InvoiceUpdateFields : InvoiceFields
+	{
+		public string invoiceId;
 	}
 
 	[Route("api/[controller]")]
@@ -62,7 +67,7 @@ namespace backend.Controllers
 
 		[Authenticate]
 		[HttpPut]
-		public ActionResult<Invoice> Create(InvoiceCreationFields invoiceCreation)
+		public ActionResult<Invoice> Create(InvoiceFields invoiceCreation)
 		{
 			var user = (User) Request.HttpContext.Items["user"];
 
@@ -78,6 +83,33 @@ namespace backend.Controllers
 			{
 				switch (e.Message)
 				{
+					case "link_contract_not_found":
+						return NotFound();
+					default:
+						throw e;
+				}
+			}
+        }
+
+		[Authenticate]
+		[HttpPost]
+		public ActionResult<Invoice> Update(InvoiceUpdateFields invoiceUpdate)
+		{
+			var user = (User) Request.HttpContext.Items["user"];
+
+			try
+			{
+				Invoice invoice = _invoiceService.Update(invoiceUpdate.invoiceId, user.Id,
+					invoiceUpdate.amount, _settings.Currency, invoiceUpdate.dueDate,
+					invoiceUpdate.description, invoiceUpdate.linkedContract);
+
+				return invoice;
+			}
+			catch (Exception e)
+			{
+				switch (e.Message)
+				{
+					case "invoice_not_found":
 					case "link_contract_not_found":
 						return NotFound();
 					default:

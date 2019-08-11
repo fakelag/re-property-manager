@@ -61,14 +61,31 @@ namespace backend.Services
 			return newInvoice;
 		}
 
-        public Invoice Update(string id, Invoice invoice)
+        public Invoice Update(string invoiceId, string ownerId, int amount,
+			string currency, DateTime dueDate, string description = "",
+			string linkedContract = null)
 		{
-			Invoice inv = Get(id);
+			Invoice invoice = Get(invoiceId, ownerId);
 
-			if (inv == null)
-				return null;
+			if (invoice == null)
+				throw new Exception("invoice_not_found");
 
-			invoice.Id = inv.Id;
+			if (linkedContract != null)
+			{
+				// verify contract exists
+				var contract = _contractService.Get(ownerId, linkedContract);
+
+				if (contract == null)
+					throw new Exception("link_contract_not_found");
+			}
+
+			invoice.Amount = amount;
+			invoice.Currency = currency;
+			invoice.Description = description;
+			invoice.DueDate = dueDate;
+			invoice.AmountPaid = 0;
+			invoice.Contract = linkedContract;
+
 			_invoices.ReplaceOne(nv => nv.Id == invoice.Id, invoice);
 
 			return UpdateAmountPaid(invoice, _transactionService.ListByUser(invoice.Owner));
