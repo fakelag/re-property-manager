@@ -42,7 +42,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 		if (match.params.contractId) {
 			contractApi.fetchContract(match.params.contractId)
 				.then((ctr) => setContract(ctr))
-				.catch((err) => console.log('caught: ', err));
+				.catch((err) => setIsError(true));
 		}
 	}, []);
 
@@ -56,7 +56,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 				.catch(() => setIsError(true));
 		} else {
 			contractApi.createContract(match.params.propertyId, contract)
-				.then((ctr) => console.log('created: ', ctr))
+				.then((ctr) => setContract(ctr))
 				.catch(() => setIsError(true));
 		}
 	};
