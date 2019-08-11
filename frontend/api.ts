@@ -154,14 +154,14 @@ const fetchInvoice = async (invoiceId: string): Promise<IInvoice> => {
 	}
 };
 
-const createInvoice = async (invoice: {
-	description: string;
-	linkedContract: string;
-	amount: number;
-	dueDate: Date;
-}): Promise<IInvoice> => {
+const createInvoice = async (invoice: IInvoice): Promise<IInvoice> => {
 	try {
-		const response = await axios.put<IInvoice>('/api/invoice', invoice);
+		const response = await axios.put<IInvoice>('/api/invoice', {
+			amount: invoice.amount,
+			description: invoice.description,
+			dueDate: invoice.dueDate,
+			linkedContract: invoice.linkedContract,
+		});
 
 		if (response.status === 200 || response.status === 201) // Ok | Created
 			return response.data;
@@ -179,6 +179,26 @@ const deleteInvoice = async (invoiceId: string): Promise<void> => {
 
 		if (response.status !== 200)
 			throw new Error(`Invalid status code: , ${response.status}`);
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+};
+
+const updateInvoice = async (invoiceId: string, invoice: IInvoice): Promise<IInvoice> => {
+	try {
+		const response = await axios.post<IInvoice>('/api/invoice', {
+			amount: invoice.amount,
+			description: invoice.description,
+			dueDate: invoice.dueDate,
+			invoiceId,
+			linkedContract: invoice.linkedContract,
+		});
+
+		if (response.status === 200)
+			return response.data;
+
+		throw new Error(`Invalid status code: , ${response.status}`);
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -233,6 +253,7 @@ export const invoiceApi = {
 	deleteInvoice,
 	fetchInvoice,
 	fetchInvoiceListForContract,
+	updateInvoice,
 };
 
 export const userApi = {
