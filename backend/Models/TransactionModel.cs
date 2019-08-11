@@ -1,4 +1,3 @@
-using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
@@ -13,7 +12,7 @@ namespace backend.Models
 
 		[BsonElement("amount")]
 		[JsonProperty("amount")]
-		public string Amount { get; set; }
+		public int Amount { get; set; }
 	}
 
 	public class Transaction

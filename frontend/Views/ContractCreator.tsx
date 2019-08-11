@@ -42,7 +42,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 		if (match.params.contractId) {
 			contractApi.fetchContract(match.params.contractId)
 				.then((ctr) => setContract(ctr))
-				.catch((err) => console.log('caught: ', err));
+				.catch((err) => setIsError(true));
 		}
 	}, []);
 
@@ -56,7 +56,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 				.catch(() => setIsError(true));
 		} else {
 			contractApi.createContract(match.params.propertyId, contract)
-				.then((ctr) => console.log('created: ', ctr))
+				.then((ctr) => setContract(ctr))
 				.catch(() => setIsError(true));
 		}
 	};
@@ -216,7 +216,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 					</span>
 					<span className="p-float-label">
 						<Calendar
-							value={contract.beginDate}
+							value={new Date(contract.beginDate)}
 							dateFormat="dd.mm.yy"
 							onChange={(e) => {
 								setContract({
@@ -232,7 +232,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 					</span>
 					<span className="p-float-label">
 						<Calendar
-							value={contract.endDate ? contract.endDate : undefined}
+							value={contract.endDate ? new Date(contract.endDate) : undefined}
 							dateFormat="dd.mm.yy"
 							onChange={(e) => {
 								setContract({

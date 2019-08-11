@@ -21,6 +21,7 @@ label {
 .PropertyPage {
 	section {
 		margin-bottom: 1rem;
+		width: 55rem;
 
 		button {
 			margin-right: 1rem;
@@ -29,11 +30,11 @@ label {
 }
 
 .PropertyList {
-	width: 50rem;
+	width: 55rem;
 	height: 60rem;
 }
 
-.CreatePropertyForm, .CreateContractForm {
+.CreatePropertyForm, .CreateContractForm, .CreateInvoiceForm {
 	width: 100%;
 	display: inline-flex;
 	flex-direction: column;
@@ -55,7 +56,7 @@ label {
 	}
 }
 
-.ContractCreatorCard {
+.ContractCreatorCard, .InvoiceCreatorCard {
 	width: 55rem;
 
 	.p-card-body {

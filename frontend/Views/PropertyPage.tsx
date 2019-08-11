@@ -40,7 +40,7 @@ const PropertyPage = ({ match }: { match: MatchParams<{ propertyId: string }> })
 						value={property.contracts}
 						selectionMode="single"
 						onRowSelect={(e: { originalEvent: Event; data: IContract; type: string; }) =>
-							router.push(`/contractsettings/${property.id}/${e.data.id}`)}
+							router.push(`/contract/${property.id}/${e.data.id}`)}
 					>
 						<Column field="id" header="Id" />
 						<Column field="participant.fullName" header="Participant Name" />
