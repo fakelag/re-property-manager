@@ -7,5 +7,5 @@ export default interface IInvoice {
 	description: string;
 	creationDate: Date;
 	dueDate: Date;
-	linkedContract: string;
+	linkedContract: string | null;
 }
