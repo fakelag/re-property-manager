@@ -106,6 +106,14 @@ const ContractPage = ({ match }: { match: MatchParams<{ propertyId: string, cont
 				</section>
 				<section>
 					<Button
+						type="button"
+						className="p-button-info"
+						label="Create invoice"
+						icon="pi pi-envelope"
+						iconPos="left"
+						onClick={() => router.push(`/invoice?contract=${match.params.contractId}`)}
+					/>
+					<Button
 						className="p-button-danger"
 						label="Delete contract"
 						icon="pi pi-trash"
