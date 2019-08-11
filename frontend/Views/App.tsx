@@ -5,6 +5,7 @@ import PropertyPage from './PropertyPage';
 import ContractPage from './ContractPage';
 import PropertyCreator from './PropertyCreator';
 import ContractCreator from './ContractCreator';
+import InvoiceCreator from '../Components/InvoiceCreator';
 import Header from '../Components/Header';
 import PropertyList from '../Components/PropertyList';
 
@@ -28,6 +29,11 @@ const App = () => {
 						exact
 						path="/contract/:propertyId/:contractId"
 						component={ContractPage}
+					/>
+					<Route
+						exact
+						path="/invoice/:invoiceId"
+						component={InvoiceCreator}
 					/>
 					<Route
 						exact
