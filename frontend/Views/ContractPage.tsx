@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import router from '../router';
 import IContract from '../interfaces/Contract';
 import IInvoice from '../interfaces/Invoice';
+import { useSelector } from 'react-redux';
+import { IStore } from '../store';
 import { contractApi, invoiceApi } from '../api';
 import { match as MatchParams } from 'react-router';
 import { Button } from 'primereact/button';
@@ -17,6 +19,8 @@ const ContractPage = ({ match }: { match: MatchParams<{ propertyId: string, cont
 	const [isLoadingInvoices, setIsLoadingInvoices] = useState(true);
 	const [contract, setContract] = useState<IContract | null>(null);
 	const [invoiceList, setInvoiceList] = useState<IInvoice[]>([]);
+
+	const growl = useSelector<IStore, IStore['growl']>((state) => state.growl);
 
 	useEffect(() => {
 		contractApi.fetchContract(match.params.contractId)
@@ -34,7 +38,30 @@ const ContractPage = ({ match }: { match: MatchParams<{ propertyId: string, cont
 	const deleteContract = () => {
 		contractApi.deleteContract(match.params.propertyId, match.params.contractId)
 			.then(() => router.push(`/property/${match.params.propertyId}`))
-			.catch(() => setIsError(true));
+			.catch(() => {
+				if (growl) {
+					growl.show({
+						closable: true,
+						detail: 'A network error occurred while deleting the contract.',
+						life: 5000,
+						severity: 'error',
+						sticky: false,
+						summary: 'Network error',
+					});
+				}
+			})
+			.finally(() => {
+				if (growl) {
+					growl.show({
+						closable: true,
+						detail: 'Contract has been deleted.',
+						life: 5000,
+						severity: 'success',
+						sticky: false,
+						summary: 'Contract deleted',
+					});
+				}
+			});
 	};
 
 	if (isError)

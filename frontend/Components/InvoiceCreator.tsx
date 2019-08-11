@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { IStore } from '../store';
 import { match as MatchParams } from 'react-router';
+import { Location } from 'history';
 import { invoiceApi } from '../api';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
@@ -25,6 +28,8 @@ const ContractCreator = ({ match }: { match: MatchParams<{ invoiceId?: string }>
 		owner: '',
 	});
 
+	const growl = useSelector<IStore, IStore['growl']>((state) => state.growl);
+
 	useEffect(() => {
 		if (match.params.invoiceId) {
 			invoiceApi.fetchInvoice(match.params.invoiceId)
@@ -44,12 +49,38 @@ const ContractCreator = ({ match }: { match: MatchParams<{ invoiceId?: string }>
 			invoiceApi.updateInvoice(match.params.invoiceId, invoice)
 				.then((inv) => setInvoice(inv))
 				.catch(() => setIsError(true))
-				.finally(() => router.goBack());
+				.finally(() => {
+					if (growl) {
+						growl.show({
+							closable: true,
+							detail: 'Invoice has been updated.',
+							life: 5000,
+							severity: 'success',
+							sticky: false,
+							summary: 'Invoice updated',
+						});
+					}
+
+					router.goBack();
+				});
 		} else {
 			invoiceApi.createInvoice(invoice)
 				.then((inv) => setInvoice(inv))
 				.catch(() => setIsError(true))
-				.finally(() => router.goBack());
+				.finally(() => {
+					if (growl) {
+						growl.show({
+							closable: true,
+							detail: 'Invoice has been created.',
+							life: 5000,
+							severity: 'success',
+							sticky: false,
+							summary: 'Invoice created',
+						});
+					}
+
+					router.goBack();
+				});
 		}
 	};
 
@@ -92,7 +123,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ invoiceId?: string }>
 					</span>
 					<span className="p-float-label">
 						<InputText
-							disabled={!!match.params.invoiceId}
+							disabled //={!!match.params.invoiceId}
 							id="invoice-contract"
 							type="text"
 							value={invoice.linkedContract || ''}
@@ -154,7 +185,31 @@ const ContractCreator = ({ match }: { match: MatchParams<{ invoiceId?: string }>
 				iconPos="left"
 				onClick={() => {
 					invoiceApi.deleteInvoice(match.params.invoiceId!)
-						.then(() => router.goBack());
+						.then(() => router.goBack())
+						.catch(() => {
+							if (growl) {
+								growl.show({
+									closable: true,
+									detail: 'A network error occurred while deleting the invoice.',
+									life: 5000,
+									severity: 'error',
+									sticky: false,
+									summary: 'Network error',
+								});
+							}
+						})
+						.finally(() => {
+							if (growl) {
+								growl.show({
+									closable: true,
+									detail: 'Invoice has been deleted.',
+									life: 5000,
+									severity: 'success',
+									sticky: false,
+									summary: 'Invoice deleted',
+								});
+							}
+						});
 				}}
 			/>}
 		</article>
