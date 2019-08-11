@@ -12,8 +12,11 @@ import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import IInvoice from '../interfaces/Invoice';
 import router from '../router';
+import queryString from 'query-string';
 
-const ContractCreator = ({ match }: { match: MatchParams<{ invoiceId?: string }> }) => {
+const ContractCreator = ({ match, location }: { match: MatchParams<{ invoiceId?: string }>, location: Location }) => {
+	const contractField: { contract?: string } = queryString.parse(location.search);
+
 	const [isError, setIsError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [invoice, setInvoice] = useState<IInvoice>({
@@ -24,7 +27,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ invoiceId?: string }>
 		description: '',
 		dueDate: new Date(),
 		id: '',
-		linkedContract: null,
+		linkedContract: contractField.contract ? contractField.contract : null,
 		owner: '',
 	});
 
