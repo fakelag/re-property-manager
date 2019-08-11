@@ -1,7 +1,14 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import { reducer } from './store';
 import Root from './Views/Root';
 
 import './index.scss';
 
-ReactDOM.render(<Root />, document.getElementsByTagName('main')[0]);
+const store = createStore(reducer);
+
+ReactDOM.render(<Provider store={store}>
+	<Root />
+</Provider>, document.getElementsByTagName('main')[0]);

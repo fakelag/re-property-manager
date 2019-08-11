@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { IStore } from '../store';
 import { match as MatchParams } from 'react-router';
 import { contractApi } from '../api';
 import { Card } from 'primereact/card';
@@ -38,6 +40,8 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 		signDate: new Date(),
 	});
 
+	const growl = useSelector<IStore, IStore['growl']>((state) => state.growl);
+
 	useEffect(() => {
 		if (match.params.contractId) {
 			contractApi.fetchContract(match.params.contractId)
@@ -50,14 +54,46 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 		event.preventDefault();
 		event.stopPropagation();
 
+		let newContractId = '';
+
 		if (match.params.contractId) {
 			contractApi.updateContract(match.params.propertyId, match.params.contractId, contract)
-				.then((ctr) => setContract(ctr))
-				.catch(() => setIsError(true));
+				.then((ctr) => {
+					if (growl) {
+						growl.show({
+							closable: true,
+							detail: 'Contract has been updated.',
+							life: 5000,
+							severity: 'success',
+							sticky: false,
+							summary: 'Contract updated',
+						});
+					}
+
+					newContractId = ctr.id;
+					setContract(ctr);
+				})
+				.catch(() => setIsError(true))
+				.finally(() => router.push(`/contract/${match.params.propertyId}/${newContractId}`));
 		} else {
 			contractApi.createContract(match.params.propertyId, contract)
-				.then((ctr) => setContract(ctr))
-				.catch(() => setIsError(true));
+				.then((ctr) => {
+					if (growl) {
+						growl.show({
+							closable: true,
+							detail: 'Contract has been created.',
+							life: 5000,
+							severity: 'success',
+							sticky: false,
+							summary: 'Contract created',
+						});
+					}
+
+					newContractId = ctr.id;
+					setContract(ctr);
+				})
+				.catch(() => setIsError(true))
+				.finally(() => router.push(`/contract/${match.params.propertyId}/${newContractId}`));
 		}
 	};
 
@@ -298,7 +334,31 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 				iconPos="left"
 				onClick={() => {
 					contractApi.deleteContract(match.params.propertyId, match.params.contractId!)
-						.then(() => router.push(`/property/${match.params.propertyId}`));
+						.then(() => router.push(`/property/${match.params.propertyId}`))
+						.catch(() => {
+							if (growl) {
+								growl.show({
+									closable: true,
+									detail: 'A network error occurred while deleting the contract.',
+									life: 5000,
+									severity: 'error',
+									sticky: false,
+									summary: 'Network error',
+								});
+							}
+						})
+						.finally(() => {
+							if (growl) {
+								growl.show({
+									closable: true,
+									detail: 'Contract has been deleted.',
+									life: 5000,
+									severity: 'success',
+									sticky: false,
+									summary: 'Contract deleted',
+								});
+							}
+						});
 				}}
 			/>}
 		</article>

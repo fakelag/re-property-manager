@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { IStore } from '../store';
 import { propertyApi } from '../api';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -22,14 +24,42 @@ const PropertyCreator = () => {
 		zip: '',
 	});
 
+	const growl = useSelector<IStore, IStore['growl']>((state) => state.growl);
+
 	const createOrUpdateProperty = async () => {
 		if (property.id) {
 			propertyApi.updateProperty(property.id, property)
-				.then((data) => setProperty(data))
+				.then((prop) => {
+					if (growl) {
+						growl.show({
+							closable: true,
+							detail: 'Property has been updated.',
+							life: 5000,
+							severity: 'success',
+							sticky: false,
+							summary: 'Property updated',
+						});
+					}
+
+					setProperty(prop);
+				})
 				.catch(() => setIsError(true));
 		} else {
 			propertyApi.createProperty(property)
-				.then((data) => setProperty(data))
+				.then((prop) => {
+					if (growl) {
+						growl.show({
+							closable: true,
+							detail: 'Property has been created.',
+							life: 5000,
+							severity: 'success',
+							sticky: false,
+							summary: 'Property created',
+						});
+					}
+
+					setProperty(prop);
+				})
 				.catch(() => setIsError(true));
 		}
 	};

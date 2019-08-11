@@ -32,7 +32,7 @@ const App = () => {
 					/>
 					<Route
 						exact
-						path="/invoice/:invoiceId"
+						path="/invoice/:invoiceId?"
 						component={InvoiceCreator}
 					/>
 					<Route
