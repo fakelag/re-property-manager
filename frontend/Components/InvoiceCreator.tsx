@@ -158,7 +158,7 @@ const ContractCreator = ({ match, location }: { match: MatchParams<{ invoiceId?:
 						<label htmlFor="input-rent-dom">Due Date</label>
 					</span>
 					<InputTextarea
-						placeholder="Additional Rental Conditions"
+						placeholder="Invoice description"
 						rows={5}
 						value={invoice.description}
 						onChange={(e) => {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import router from '../router';
 import { useSelector } from 'react-redux';
 import { IStore } from '../store';
 import { propertyApi } from '../api';
@@ -58,7 +59,7 @@ const PropertyCreator = () => {
 						});
 					}
 
-					setProperty(prop);
+					router.push(`property/${prop.id}`);
 				})
 				.catch(() => setIsError(true));
 		}
