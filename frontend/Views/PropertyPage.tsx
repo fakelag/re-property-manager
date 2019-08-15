@@ -64,6 +64,8 @@ const PropertyPage = ({ match }: { match: MatchParams<{ propertyId: string }> })
 			property ? <>
 				<section>
 					<DataTable
+							paginator
+							rows={5}
 						value={property.contracts}
 						selectionMode="single"
 						onRowSelect={(e: { originalEvent: Event; data: IContract; type: string; }) =>

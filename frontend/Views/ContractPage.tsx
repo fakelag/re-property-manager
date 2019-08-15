@@ -74,6 +74,8 @@ const ContractPage = ({ match }: { match: MatchParams<{ propertyId: string, cont
 					{isLoadingInvoices
 						? <ProgressSpinner />
 						: <DataTable
+								paginator
+								rows={7}
 							value={invoiceList.map((inv) => ({
 								...inv,
 								amount: <p>{inv.amount / 100} &euro;</p>,

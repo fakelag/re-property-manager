@@ -22,6 +22,8 @@ const PropertyList = ({ filterByAddress }: { filterByAddress: string }) => {
 		{isLoading
 			&& <ProgressSpinner />
 			|| <DataTable
+				paginator
+				rows={10}
 				value={isError
 					? [{ address: 'Network error' }]
 					: properties.filter((prop) =>
