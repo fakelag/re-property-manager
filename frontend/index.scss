@@ -12,20 +12,36 @@ label {
 	font-size: 0.875rem;
 }
 
+td {
+	overflow-x: hidden;
+}
+
 .Dashboard {
 	padding-top: 1rem;
 	padding-left: 1rem;
 	padding-right: 1rem;
 }
 
-.PropertyPage {
-	section {
+.PropertyPage, .ContractPage {
+	display: flex;
+	justify-content: center;
+	flex-direction: row;
+
+	section:not(:last-child) {
 		margin-bottom: 1rem;
-		width: 55rem;
 
 		button {
 			margin-right: 1rem;
 		}
+	}
+
+	.PageCards {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.PageCards .PageCard {
+		margin-bottom: 2rem;
 	}
 }
 
@@ -56,7 +72,7 @@ label {
 	}
 }
 
-.ContractCreatorCard, .InvoiceCreatorCard {
+.ContractCreatorCard, .InvoiceCreatorCard, .PropertyPageCard {
 	width: 55rem;
 
 	.p-card-body {

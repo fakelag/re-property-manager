@@ -10,6 +10,7 @@ import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
+import { Card } from 'primereact/card';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 const ContractPage = ({ match }: { match: MatchParams<{ propertyId: string, contractId: string }> }) => {
@@ -67,61 +68,69 @@ const ContractPage = ({ match }: { match: MatchParams<{ propertyId: string, cont
 	if (isError)
 		return (<>Network Error</>);
 
-	return (<div className="PropertyPage">
+	return (<div className="ContractPage">
 		{isLoadingContract ? <ProgressSpinner /> :
-			contract ? <>
-				<section>
-					{isLoadingInvoices
-						? <ProgressSpinner />
-						: <DataTable
-							value={invoiceList.map((inv) => ({
-								...inv,
-								amount: <p>{inv.amount / 100} &euro;</p>,
-								amountPaid: <p>{inv.amountPaid / 100} &euro;</p>,
-							}))}
-							selectionMode="single"
-							onRowSelect={(e: { originalEvent: Event; data: IInvoice; type: string; }) =>
-								router.push(`/invoice/${e.data.id}`)}
+			contract ? <div className="PageCards">
+				<Card className="PageCard">
+					<section>
+						{isLoadingInvoices
+							? <ProgressSpinner />
+							: <DataTable
+								paginator
+								rows={7}
+								value={invoiceList.map((inv) => ({
+									...inv,
+									amount: <p>{inv.amount / 100} &euro;</p>,
+									amountPaid: <p>{inv.amountPaid / 100} &euro;</p>,
+								}))}
+								selectionMode="single"
+								onRowSelect={(e: { originalEvent: Event; data: IInvoice; type: string; }) =>
+									router.push(`/invoice/${e.data.id}`)}
+							>
+								<Column field="id" header="Invoice Id" />
+								<Column field="amount" header="Amount" />
+								<Column field="amountPaid" header="Amount Paid" />
+								<Column field="description" header="Description" />
+							</DataTable>}
+						<Dialog
+							maximizable
+							header="Delete this contract"
+							visible={deleteDialog}
+							style={{ width: '20rem' }}
+							footer={<>
+								<Button label="Delete" icon="pi pi-check" onClick={deleteContract}
+									className="p-button-danger"/>
+								<Button label="Cancel" icon="pi pi-times" onClick={() => setDeleteDialog(false)}
+									className="p-button-secondary" />
+							</>}
+							onHide={() => setDeleteDialog(false)}
 						>
-							<Column field="id" header="Invoice Id" />
-							<Column field="amount" header="Amount" />
-							<Column field="amountPaid" header="Amount Paid" />
-							<Column field="description" header="Description" />
-						</DataTable>}
-					<Dialog
-						header="Delete the contract"
-						visible={deleteDialog}
-						style={{ width: '20rem' }}
-						footer={<>
-							<Button label="Delete" icon="pi pi-check" onClick={deleteContract}
-								className="p-button-danger"/>
-							<Button label="Cancel" icon="pi pi-times" onClick={() => setDeleteDialog(false)}
-								className="p-button-secondary" />
-						</>}
-						onHide={() => setDeleteDialog(false)}
-						maximizable
-					>
-						Do you want to delete this contract permanently?
-					</Dialog>
-				</section>
-				<section>
-					<Button
-						type="button"
-						className="p-button-info"
-						label="Create invoice"
-						icon="pi pi-envelope"
-						iconPos="left"
-						onClick={() => router.push(`/invoice?contract=${match.params.contractId}`)}
-					/>
-					<Button
-						className="p-button-danger"
-						label="Delete contract"
-						icon="pi pi-trash"
-						iconPos="left"
-						onClick={() => setDeleteDialog(true)}
-					/>
-				</section>
-			</> : <>404 Not Found</>
+							Do you want to delete this contract permanently?
+						</Dialog>
+					</section>
+					<section>
+						<Button
+							type="button"
+							className="p-button-info"
+							label="New invoice"
+							icon="pi pi-plus"
+							iconPos="left"
+							onClick={() => router.push(`/invoice?contract=${match.params.contractId}`)}
+						/>
+					</section>
+				</Card>
+				<Card className="PageCard">
+					<section>
+						<Button
+							className="p-button-danger"
+							label="Delete contract"
+							icon="pi pi-trash"
+							iconPos="left"
+							onClick={() => setDeleteDialog(true)}
+						/>
+					</section>
+				</Card>
+			</div> : <>404 Not Found</>
 		}
 	</div>);
 };
