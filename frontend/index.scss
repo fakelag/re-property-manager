@@ -22,14 +22,26 @@ td {
 	padding-right: 1rem;
 }
 
-.PropertyPage {
-	section {
+.PropertyPage, .ContractPage {
+	display: flex;
+	justify-content: center;
+	flex-direction: row;
+
+	section:not(:last-child) {
 		margin-bottom: 1rem;
-		width: 55rem;
 
 		button {
 			margin-right: 1rem;
 		}
+	}
+
+	.PageCards {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.PageCards .PageCard {
+		margin-bottom: 2rem;
 	}
 }
 
@@ -60,7 +72,7 @@ td {
 	}
 }
 
-.ContractCreatorCard, .InvoiceCreatorCard {
+.ContractCreatorCard, .InvoiceCreatorCard, .PropertyPageCard {
 	width: 55rem;
 
 	.p-card-body {
