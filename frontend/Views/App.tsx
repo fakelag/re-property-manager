@@ -3,6 +3,7 @@ import { Router, Route, Switch } from 'react-router';
 import history from '../router';
 import PropertyPage from './PropertyPage';
 import ContractPage from './ContractPage';
+import TransactionPage from './TransactionPage';
 import PropertyCreator from './PropertyCreator';
 import ContractCreator from './ContractCreator';
 import InvoiceCreator from '../Components/InvoiceCreator';
@@ -44,6 +45,11 @@ const App = () => {
 						exact
 						path="/contractsettings/:propertyId/:contractId?"
 						component={ContractCreator}
+					/>
+					<Route
+						exact
+						path="/transactions"
+						component={TransactionPage}
 					/>
 					<Route
 						path="*"

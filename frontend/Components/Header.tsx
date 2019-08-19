@@ -17,6 +17,15 @@ const Header = ({ searchPlaceholder, onSearch }:
 			label: 'Home',
 		},
 		{
+			command: (e: { originalEvent: Event }): void => {
+				if (e.originalEvent.type === 'click') {
+					router.push('/transactions');
+				}
+			},
+			icon: 'pi pi-fw pi-money-bill',
+			label: 'Transactions',
+		},
+		{
 			icon: 'pi pi-fw pi-briefcase',
 			items: [
 				{
