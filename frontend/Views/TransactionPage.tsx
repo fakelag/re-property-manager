@@ -30,7 +30,7 @@ const TransactionPage = () => {
 	return (<div className="ContractPage">
 		{isLoading ? <ProgressSpinner /> :
 			<div className="PageCards">
-				<Card className="PageCard">
+				<Card className="PageCard" title="Transactions">
 					<section>
 						<DataTable
 							paginator
