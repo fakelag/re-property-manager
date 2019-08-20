@@ -46,20 +46,20 @@ const TransactionPage = () => {
 		if (event.currentTarget.files) {
 			parse(event.currentTarget.files[0], {
 				complete: (parseResult) => {
-		if (parseResult.errors.length) {
-			if (growl) {
-				growl.show({
-					closable: true,
-					detail: 'Errors occurred during CSV parsing',
-					life: 5000,
-					severity: 'error',
-					sticky: false,
-					summary: 'Unable to parse CSV',
-				});
-			}
+					if (parseResult.errors.length) {
+						if (growl) {
+							growl.show({
+								closable: true,
+								detail: 'Errors occurred during CSV parsing',
+								life: 5000,
+								severity: 'error',
+								sticky: false,
+								summary: 'Unable to parse CSV',
+							});
+						}
 
 						console.error(parseResult.errors);
-		} else {
+					} else {
 						console.log(parseResult.meta);
 						setStmtsJsonAndColumns({
 							columns: parseResult.meta.fields,
@@ -101,17 +101,36 @@ const TransactionPage = () => {
 							<Column field="amount" header="Amount" />
 						</DataTable>
 						<Dialog
-							maximizable
-							header="Delete this contract"
+							header="Upload statements CSV"
 							visible={isUploadDialog}
 							footer={<>
 								<Button label="Upload" icon="pi pi-check" onClick={uploadCsv}
-									className="p-button-danger"/>
+									className="p-button-success"/>
 								<Button label="Cancel" icon="pi pi-times" onClick={() => setIsUploadDialog(false)}
 									className="p-button-secondary" />
 							</>}
 							onHide={() => setIsUploadDialog(false)}
 						>
+							<DataTable
+								paginator
+								rows={20}
+								value={stmtsJsonAndColumns.columns.concat(stmtsJsonAndColumns.data)}
+								selectionMode="single"
+							>
+								<Column field="date" header={<div style={{ display: 'flex', flexDirection: 'column' }}>
+									<Dropdown
+										placeholder="Date -field"
+										value={transactionToCsvColumns.date}
+										options={stmtsJsonAndColumns.columns.map((col) => ({ label: col, value: col }))}
+										onChange={(e) => setTransactionToCsvColumns({
+											...transactionToCsvColumns,
+											date: e.value,
+										})}
+									/>
+									<span style={{ marginTop: '.25rem', fontSize: '0.5rem' }}>Field for: Date</span>
+								</div>}/>
+								<Column field="amount" header="Amount" />
+							</DataTable>
 						</Dialog>
 					</section>
 					<section>
