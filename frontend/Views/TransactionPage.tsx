@@ -131,6 +131,7 @@ const TransactionPage = () => {
 							type="file"
 							name="file"
 							onChange={selectFile}
+							style={{ display: 'none' }}
 						/>
 					</section>
 				</Card>
