@@ -65,7 +65,7 @@ const TransactionPage = () => {
 						<Button
 							type="button"
 							className="p-button-info"
-							label="Upload transactions"
+							label="Upload statements"
 							icon="pi pi-plus"
 							iconPos="left"
 							onClick={() => {
