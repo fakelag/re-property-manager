@@ -2,20 +2,27 @@ import React, { useEffect, useState } from 'react';
 // import router from '../router';
 import ITransaction from '../interfaces/Transaction';
 import moment from 'moment';
-// import { useSelector } from 'react-redux';
-// import { IStore } from '../store';
+import { useSelector } from 'react-redux';
+import { IStore } from '../store';
 import { transactionApi } from '../api';
+import { parse } from 'papaparse';
 import { DataTable } from 'primereact/datatable';
+import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { Card } from 'primereact/card';
+import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 const TransactionPage = () => {
+	const inputRef = React.createRef<HTMLInputElement>();
+
 	const [isError, setIsError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isUploadDialog, setIsUploadDialog] = useState(true);
+	const [csvFile, setCsvFile] = useState<File | null>(null);
 	const [transactions, setTransactions] = useState<ITransaction[]>([]);
 
-	// const growl = useSelector<IStore, IStore['growl']>((state) => state.growl);
+	const growl = useSelector<IStore, IStore['growl']>((state) => state.growl);
 
 	useEffect(() => {
 		transactionApi.fetchTransactionList()
@@ -23,6 +30,37 @@ const TransactionPage = () => {
 			.catch(() => setIsError(true))
 			.finally(() => setIsLoading(false));
 	}, []);
+
+	const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setCsvFile(event.currentTarget.files
+			? event.currentTarget.files[0]
+			: null);
+
+		if (event.currentTarget.files)
+			setIsUploadDialog(true);
+	};
+
+	const uploadCsv = () => {
+		if (!csvFile)
+			return;
+
+		const parseResult = parse(csvFile);
+
+		if (parseResult.errors.length) {
+			if (growl) {
+				growl.show({
+					closable: true,
+					detail: 'Errors occurred during CSV parsing',
+					life: 5000,
+					severity: 'error',
+					sticky: false,
+					summary: 'Unable to parse CSV',
+				});
+			}
+		} else {
+			// parseResult.data
+		}
+	};
 
 	if (isError)
 		return (<>Network Error</>);
