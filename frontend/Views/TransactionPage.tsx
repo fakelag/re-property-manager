@@ -47,17 +47,39 @@ const TransactionPage = () => {
 							<Column field="date" header="Date" />
 							<Column field="amount" header="Amount" />
 						</DataTable>
+						<Dialog
+							maximizable
+							header="Delete this contract"
+							visible={isUploadDialog}
+							footer={<>
+								<Button label="Upload" icon="pi pi-check" onClick={uploadCsv}
+									className="p-button-danger"/>
+								<Button label="Cancel" icon="pi pi-times" onClick={() => setIsUploadDialog(false)}
+									className="p-button-secondary" />
+							</>}
+							onHide={() => setIsUploadDialog(false)}
+						>
+						</Dialog>
 					</section>
-					{/* <section>
+					<section>
 						<Button
 							type="button"
 							className="p-button-info"
-							label="New invoice"
+							label="Upload transactions"
 							icon="pi pi-plus"
 							iconPos="left"
-							onClick={() => router.push(`/invoice?contract=${match.params.contractId}`)}
+							onClick={() => {
+								if (inputRef.current)
+									inputRef.current.click();
+							}}
 						/>
-					</section> */}
+						<input
+							ref={inputRef}
+							type="file"
+							name="file"
+							onChange={selectFile}
+						/>
+					</section>
 				</Card>
 			</div>
 		}
