@@ -11,6 +11,7 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { Card } from 'primereact/card';
 import { Dialog } from 'primereact/dialog';
+import { Dropdown } from 'primereact/dropdown';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 const TransactionPage = () => {
@@ -18,9 +19,19 @@ const TransactionPage = () => {
 
 	const [isError, setIsError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
-	const [isUploadDialog, setIsUploadDialog] = useState(true);
-	const [csvFile, setCsvFile] = useState<File | null>(null);
+	const [isUploadDialog, setIsUploadDialog] = useState(false);
 	const [transactions, setTransactions] = useState<ITransaction[]>([]);
+	const [stmtsJsonAndColumns, setStmtsJsonAndColumns]
+		= useState<{ columns: string[], data: any[] }>({
+			columns: [],
+			data: [],
+		});
+	const [transactionToCsvColumns, setTransactionToCsvColumns] = useState<{
+		amount?: string;
+		date?: string;
+		currency?: string;
+		description?: string;
+	}>({});
 
 	const growl = useSelector<IStore, IStore['growl']>((state) => state.growl);
 
@@ -32,20 +43,9 @@ const TransactionPage = () => {
 	}, []);
 
 	const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setCsvFile(event.currentTarget.files
-			? event.currentTarget.files[0]
-			: null);
-
-		if (event.currentTarget.files)
-			setIsUploadDialog(true);
-	};
-
-	const uploadCsv = () => {
-		if (!csvFile)
-			return;
-
-		const parseResult = parse(csvFile);
-
+		if (event.currentTarget.files) {
+			parse(event.currentTarget.files[0], {
+				complete: (parseResult) => {
 		if (parseResult.errors.length) {
 			if (growl) {
 				growl.show({
@@ -57,9 +57,24 @@ const TransactionPage = () => {
 					summary: 'Unable to parse CSV',
 				});
 			}
+
+						console.error(parseResult.errors);
 		} else {
-			// parseResult.data
+						console.log(parseResult.meta);
+						setStmtsJsonAndColumns({
+							columns: parseResult.meta.fields,
+							data: parseResult.data,
+						});
+					}
+
+					setIsUploadDialog(true);
+				},
+				header: true,
+			});
 		}
+	};
+
+	const uploadCsv = () => {
 	};
 
 	if (isError)
