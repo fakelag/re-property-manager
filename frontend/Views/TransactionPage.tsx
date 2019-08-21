@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { IStore } from '../store';
 import { transactionApi } from '../api';
 import { parse } from 'papaparse';
+import { TreeTable } from 'primereact/treetable';
 import { DataTable } from 'primereact/datatable';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
@@ -29,10 +30,10 @@ const TransactionPage = () => {
 	const [transactionToCsvColumns, setTransactionToCsvColumns] = useState<{
 		amount?: string;
 		date?: string;
-		currency?: string;
 		description?: string;
 	}>({});
 
+	const transactionFields = ['amount', 'date', 'description'];
 	const growl = useSelector<IStore, IStore['growl']>((state) => state.growl);
 
 	useEffect(() => {
@@ -75,31 +76,98 @@ const TransactionPage = () => {
 	};
 
 	const uploadCsv = () => {
+		const mapArray = Object.entries(transactionToCsvColumns);
+		if (mapArray.find(([key, value]) => value === undefined) !== undefined
+			|| mapArray.length === 0) {
+			if (growl) {
+				growl.show({
+					closable: true,
+					detail: 'Select all fields required for transactions',
+					life: 5000,
+					severity: 'error',
+					sticky: false,
+					summary: 'Select all fields',
+				});
+			}
+		}
+
+		const transactionsToSend = stmtsJsonAndColumns.data.map((row: any) => {
+			const transaction: { [key: string]: any } = {};
+
+			mapArray.forEach(([key, value]) => {
+				transaction[key] = row[value!];
+			});
+
+			return transaction;
+		}).map((trData: any) => {
+			return {
+				...trData,
+				currency: 'EUR',
+			} as ITransaction;
+		});
+
+		transactionApi.createTransactionList(transactionsToSend)
+			.then((transactionsCreated) => {
+				if (growl) {
+					growl.show({
+						closable: true,
+						detail: 'New transactions created succrssfully.',
+						life: 5000,
+						severity: 'success',
+						sticky: false,
+						summary: 'Transactions created',
+					});
+				}
+
+				setTransactions([...transactions, ...transactionsCreated]);
+			})
+			.catch((err) => {
+				if (growl) {
+					growl.show({
+						closable: true,
+						detail: String(err),
+						life: 5000,
+						severity: 'error',
+						sticky: false,
+						summary: 'Unable to create transactions',
+					});
+				}
+			});
 	};
 
 	if (isError)
 		return (<>Network Error</>);
+
+	const treeTableData = transactions.map((tr) => ({
+		children: {
+			
+		}
+		data: {
+			...tr,
+			amount: <p>{tr.amount / 100} &euro;</p>,
+			date: <p>{moment(new Date(tr.date)).format('DD.MM.YYYY')}</p>,
+		},
+		key: tr.id,
+	}));
 
 	return (<div className="ContractPage">
 		{isLoading ? <ProgressSpinner /> :
 			<div className="PageCards">
 				<Card className="PageCard" title="Transactions">
 					<section>
-						<DataTable
+						<TreeTable
 							paginator
 							rows={20}
-							value={transactions.map((tr) => ({
-								...tr,
-								amount: <p>{tr.amount / 100} &euro;</p>,
-								date: <p>{moment(new Date(tr.date)).format('DD.MM.YYYY')}</p>,
-							}))}
+							value={treeTableData}
 							selectionMode="single"
 							// onRowSelect={(e: { originalEvent: Event; data: IInvoice; type: string; }) =>
 							// 	router.push(`/invoice/${e.data.id}`)}
 						>
-							<Column field="date" header="Date" />
+							<Column field="id" header="Id" />
 							<Column field="amount" header="Amount" />
-						</DataTable>
+							<Column field="description" header="Description" />
+							<Column field="date" header="Date" />
+						</TreeTable>
 						<Dialog
 							header="Upload statements CSV"
 							visible={isUploadDialog}
@@ -114,22 +182,40 @@ const TransactionPage = () => {
 							<DataTable
 								paginator
 								rows={20}
-								value={stmtsJsonAndColumns.columns.concat(stmtsJsonAndColumns.data)}
+								value={stmtsJsonAndColumns.data}
 								selectionMode="single"
 							>
-								<Column field="date" header={<div style={{ display: 'flex', flexDirection: 'column' }}>
-									<Dropdown
-										placeholder="Date -field"
-										value={transactionToCsvColumns.date}
-										options={stmtsJsonAndColumns.columns.map((col) => ({ label: col, value: col }))}
-										onChange={(e) => setTransactionToCsvColumns({
-											...transactionToCsvColumns,
-											date: e.value,
-										})}
-									/>
-									<span style={{ marginTop: '.25rem', fontSize: '0.5rem' }}>Field for: Date</span>
-								</div>}/>
-								<Column field="amount" header="Amount" />
+								{stmtsJsonAndColumns.columns.map((col) => {
+									const connectValue = Object.entries(transactionToCsvColumns).find(([key, value]) => value === col);
+									const dropdownValue = connectValue ? connectValue[0] : undefined;
+
+									return (<Column
+										field={col}
+										style={{ width: '12rem' }}
+										header={<div style={{ display: 'flex', flexDirection: 'column' }}>
+											<Dropdown
+												placeholder="Select field"
+												value={dropdownValue}
+												options={transactionFields.map((field) => ({ label: field, value: field }))}
+												onChange={(e) => {
+													const trToCsv: { [key: string]: any } = {};
+
+													transactionFields.forEach((trField) => {
+														if ((transactionToCsvColumns as any)[trField] !== col)
+															trToCsv[trField] = (transactionToCsvColumns as any)[trField];
+														else
+															trToCsv[trField] = undefined;
+													});
+													trToCsv[e.value] = col;
+
+													setTransactionToCsvColumns(trToCsv);
+													console.log(trToCsv);
+												}}
+											/>
+											<span style={{ marginTop: '.25rem', fontSize: '0.5rem' }}>Field for: "{col}"</span>
+										</div>}
+								/>);
+								})}
 							</DataTable>
 						</Dialog>
 					</section>
