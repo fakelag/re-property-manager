@@ -161,6 +161,7 @@ const TransactionPage = () => {
 				}
 
 				setTransactions([...transactions, ...transactionsCreated]);
+					setIsUploadDialog(false);
 			})
 			.catch((err) => {
 				if (growl) {
