@@ -43,6 +43,43 @@ const TransactionPage = () => {
 			.finally(() => setIsLoading(false));
 	}, []);
 
+	const convertAmount = (amountField: string, useConversion: boolean) => {
+		const amountNoSymbols = amountField.replace(/(?![0-9,\.])./g, '');
+
+		if (amountNoSymbols.indexOf('.') !== -1 && useConversion)
+			throw new Error('parsing_error_dot_colon_inconsistency');
+
+		const spacelessAmount = amountNoSymbols.split(' ').join('');
+		const convertedAmount = useConversion
+			? spacelessAmount.split(',').join('.') // we don't have dots, which means we replace colons with dots
+			: spacelessAmount.split(',').join(''); // we do have dots, just remove all colons
+
+		try {
+			const decimalAmount = Number.parseFloat(convertedAmount);
+			const moneyAmount = jsMoney.fromDecimal(decimalAmount, 'EUR');
+
+			return moneyAmount;
+		} catch (err) {
+			console.error(err);
+			throw err;
+		}
+	};
+
+	const processAmountFields = (amounts: string[]) => {
+		if (amounts.length <= 0)
+			return [false, []];
+
+		const useConversion = amounts[0].indexOf('.') === -1;
+
+		try {
+			const amountsResult = amounts.map((am) => convertAmount(am, useConversion));
+			return [false, amountsResult];
+		} catch (err) {
+			console.error(err);
+			return [true, []];
+		}
+	};
+
 	const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.currentTarget.files) {
 			parse(event.currentTarget.files[0], {
@@ -102,6 +139,9 @@ const TransactionPage = () => {
 		}).map((trData: any) => {
 			return {
 				...trData,
+					amount: typeof trData.amount === 'string'
+						? convertAmount(trData.amount, trData.amount.indexOf('.') === -1).getAmount()
+						: trData.amount,
 				currency: 'EUR',
 			} as ITransaction;
 		});
