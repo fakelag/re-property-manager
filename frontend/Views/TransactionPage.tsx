@@ -128,6 +128,7 @@ const TransactionPage = () => {
 			}
 		}
 
+		try {
 		const transactionsToSend = stmtsJsonAndColumns.data.map((row: any) => {
 			const transaction: { [key: string]: any } = {};
 
@@ -173,6 +174,18 @@ const TransactionPage = () => {
 					});
 				}
 			});
+		} catch (err) {
+			if (growl) {
+				growl.show({
+					closable: true,
+					detail: 'Unable to parse transactions. Check that all the fields are in the correct format.',
+					life: 5000,
+					severity: 'error',
+					sticky: false,
+					summary: 'Parsing error',
+				});
+			}
+		}
 	};
 
 	if (isError)
