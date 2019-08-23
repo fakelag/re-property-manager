@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import router from '../router';
+import router from '../router';
 import ITransaction from '../interfaces/Transaction';
 import moment from 'moment';
 import jsMoney from 'js-money';
@@ -194,7 +194,17 @@ const TransactionPage = () => {
 		return (<>Network Error</>);
 
 	const treeTableData = transactions.map((tr) => ({
-		children: [],
+		children: tr.parts.map((part, index) => ({
+			children: [],
+			data: {
+				amount: <p>{part.amount / 100} &euro;</p>,
+				date: '',
+				description: <p>For invoice <a onClick={() =>
+					router.push(`/invoice/${part.invoice}`)}>{part.invoice}</a></p>,
+				id: '',
+			},
+			key: `${tr.id}-${index}`,
+		})),
 		data: {
 			...tr,
 			amount: <p>{tr.amount / 100} &euro;</p>,
@@ -216,7 +226,12 @@ const TransactionPage = () => {
 							// onRowSelect={(e: { originalEvent: Event; data: IInvoice; type: string; }) =>
 							// 	router.push(`/invoice/${e.data.id}`)}
 						>
-							<Column field="id" header="Id" />
+							<Column
+								expander
+								field="id"
+								header="Id"
+								bodyStyle={{ 'white-space': 'nowrap' }}
+							/>
 							<Column field="amount" header="Amount" />
 							<Column field="description" header="Description" />
 							<Column field="date" header="Date" />

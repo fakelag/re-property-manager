@@ -7,6 +7,6 @@ export default interface ITransaction {
 	description: string;
 	parts: Array<{
 		invoice: string;
-		amount: string;
+		amount: number;
 	}>;
 }
