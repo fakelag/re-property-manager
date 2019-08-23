@@ -262,8 +262,27 @@ const TransactionPage = () => {
 													});
 													trToCsv[e.value] = col;
 
+
+													if (e.value === 'amount') {
+														// warn if the fields don't match the format /^\-?\d+\.\d\d$/
+														const amountsProcessed = processAmountFields(stmtsJsonAndColumns.data.map((data) =>
+															data[trToCsv[e.value]]));
+
+														if (amountsProcessed[0]) {
+															if (growl) {
+																growl.show({
+																	closable: true,
+																	detail: 'Error parsing amount fields. Make sure amounts are in format 0.00',
+																	life: 5000,
+																	severity: 'warn',
+																	sticky: false,
+																	summary: 'Parsing error',
+																});
+															}
+														}
+													}
+
 													setTransactionToCsvColumns(trToCsv);
-													console.log(trToCsv);
 												}}
 											/>
 											<span style={{ marginTop: '.25rem', fontSize: '0.5rem' }}>Field for: "{col}"</span>
