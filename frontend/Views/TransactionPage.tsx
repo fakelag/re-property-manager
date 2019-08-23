@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 // import router from '../router';
 import ITransaction from '../interfaces/Transaction';
 import moment from 'moment';
+import jsMoney from 'js-money';
 import { useSelector } from 'react-redux';
 import { IStore } from '../store';
 import { transactionApi } from '../api';
@@ -129,52 +130,52 @@ const TransactionPage = () => {
 		}
 
 		try {
-		const transactionsToSend = stmtsJsonAndColumns.data.map((row: any) => {
-			const transaction: { [key: string]: any } = {};
+			const transactionsToSend = stmtsJsonAndColumns.data.map((row: any) => {
+				const transaction: { [key: string]: any } = {};
 
-			mapArray.forEach(([key, value]) => {
-				transaction[key] = row[value!];
-			});
+				mapArray.forEach(([key, value]) => {
+					transaction[key] = row[value!];
+				});
 
-			return transaction;
-		}).map((trData: any) => {
-			return {
-				...trData,
+				return transaction;
+			}).map((trData: any) => {
+				return {
+					...trData,
 					amount: typeof trData.amount === 'string'
 						? convertAmount(trData.amount, trData.amount.indexOf('.') === -1).getAmount()
 						: trData.amount,
-				currency: 'EUR',
-			} as ITransaction;
-		});
-
-		transactionApi.createTransactionList(transactionsToSend)
-			.then((transactionsCreated) => {
-				if (growl) {
-					growl.show({
-						closable: true,
-						detail: 'New transactions created succrssfully.',
-						life: 5000,
-						severity: 'success',
-						sticky: false,
-						summary: 'Transactions created',
-					});
-				}
-
-				setTransactions([...transactions, ...transactionsCreated]);
-					setIsUploadDialog(false);
-			})
-			.catch((err) => {
-				if (growl) {
-					growl.show({
-						closable: true,
-						detail: String(err),
-						life: 5000,
-						severity: 'error',
-						sticky: false,
-						summary: 'Unable to create transactions',
-					});
-				}
+					currency: 'EUR',
+				} as ITransaction;
 			});
+
+			transactionApi.createTransactionList(transactionsToSend)
+				.then((transactionsCreated) => {
+					if (growl) {
+						growl.show({
+							closable: true,
+							detail: 'New transactions created succrssfully.',
+							life: 5000,
+							severity: 'success',
+							sticky: false,
+							summary: 'Transactions created',
+						});
+					}
+
+					setTransactions([...transactions, ...transactionsCreated]);
+					setIsUploadDialog(false);
+				})
+				.catch((err) => {
+					if (growl) {
+						growl.show({
+							closable: true,
+							detail: String(err),
+							life: 5000,
+							severity: 'error',
+							sticky: false,
+							summary: 'Unable to create transactions',
+						});
+					}
+				});
 		} catch (err) {
 			if (growl) {
 				growl.show({
@@ -193,9 +194,7 @@ const TransactionPage = () => {
 		return (<>Network Error</>);
 
 	const treeTableData = transactions.map((tr) => ({
-		children: {
-			
-		}
+		children: [],
 		data: {
 			...tr,
 			amount: <p>{tr.amount / 100} &euro;</p>,
@@ -250,7 +249,9 @@ const TransactionPage = () => {
 											<Dropdown
 												placeholder="Select field"
 												value={dropdownValue}
-												options={transactionFields.map((field) => ({ label: field, value: field }))}
+												options={transactionFields.map((field) => ({ label: field, value: field })).concat([
+													{ label: '[[Reset]]', value: 'none' },
+												])}
 												onChange={(e) => {
 													const trToCsv: { [key: string]: any } = {};
 
@@ -260,8 +261,11 @@ const TransactionPage = () => {
 														else
 															trToCsv[trField] = undefined;
 													});
+
 													trToCsv[e.value] = col;
 
+													if (e.value === 'none')
+														trToCsv[e.value] = undefined;
 
 													if (e.value === 'amount') {
 														// warn if the fields don't match the format /^\-?\d+\.\d\d$/
