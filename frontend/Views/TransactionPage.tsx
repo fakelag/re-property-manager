@@ -217,7 +217,7 @@ const TransactionPage = () => {
 				amountDisplay: (<div className="p-inputgroup">
 				<span className="p-inputgroup-addon">€</span>
 					<InputText
-						id="invoice-amount"
+						id="tr-part-amount"
 						type="text"
 						value={part.amount / 100}
 						keyfilter="int"
