@@ -14,6 +14,7 @@ import { Column } from 'primereact/column';
 import { Card } from 'primereact/card';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
+import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 const TransactionPage = () => {
@@ -24,6 +25,7 @@ const TransactionPage = () => {
 	const [isUploadDialog, setIsUploadDialog] = useState(false);
 	const [transactions, setTransactions] = useState<ITransaction[]>([]);
 	const [backupTransactions, setBackupTransactions] = useState<ITransaction[]>([]);
+	const [editedTransactions, setEditedTransactions] = useState<string[]>([]);
 	const [stmtsJsonAndColumns, setStmtsJsonAndColumns]
 		= useState<{ columns: string[], data: any[] }>({
 			columns: [],
@@ -361,6 +363,65 @@ const TransactionPage = () => {
 						</Dialog>
 					</section>
 					<section>
+						{editedTransactions.length > 0 && <Button
+							type="button"
+							className="p-button-success"
+							label="Update Transactions"
+							icon="pi pi-save"
+							iconPos="left"
+							onClick={() => {
+								transactionApi.updateTransactionList(editedTransactions.map((transactionId) => {
+									const editedTransaction = transactions.find((tr) => tr.id === transactionId);
+
+									if (editedTransaction === undefined)
+										throw new Error(`Unable to find transaction for edit id=${transactionId}`);
+
+									return {
+										id: editedTransaction.id,
+										transaction: editedTransaction,
+									};
+								})).then((updatedTransactions) => {
+									if (growl) {
+										growl.show({
+											closable: true,
+											detail: 'Transactions updated successfully.',
+											life: 5000,
+											severity: 'success',
+											sticky: false,
+											summary: 'Transactions updated',
+										});
+									}
+
+									const newTransactions = transactions.map((oldTr) =>
+										updatedTransactions.find((newTr) => newTr.id === oldTr.id) || oldTr,
+									);
+									setTransactions(newTransactions);
+									setBackupTransactions(deepCopyTransactions(newTransactions));
+								}).catch((err) => {
+									if (growl) {
+										growl.show({
+											closable: true,
+											detail: String(err),
+											life: 5000,
+											severity: 'error',
+											sticky: false,
+											summary: 'Unable to update transactions',
+										});
+									}
+								}).finally(() => setEditedTransactions([]));
+							}}
+						/>}
+						{editedTransactions.length > 0 && <Button
+							type="button"
+							className="p-button-danger"
+							label="Cancel Changes"
+							icon="pi pi-trash"
+							iconPos="left"
+							onClick={() => {
+								setTransactions(deepCopyTransactions(backupTransactions));
+								setEditedTransactions([]);
+							}}
+						/>}
 						<Button
 							type="button"
 							className="p-button-info"
