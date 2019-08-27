@@ -425,6 +425,7 @@ const TransactionPage = () => {
 						<Button
 							type="button"
 							className="p-button-info"
+							style={{ marginLeft: 'auto' }}
 							label="Upload statements"
 							icon="pi pi-plus"
 							iconPos="left"
