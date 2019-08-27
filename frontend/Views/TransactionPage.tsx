@@ -260,7 +260,7 @@ const TransactionPage = () => {
 		key: tr.id,
 	}));
 
-	return (<div className="ContractPage">
+	return (<div className="TransactionPage">
 		{isLoading ? <ProgressSpinner /> :
 			<div className="PageCards">
 				<Card className="PageCard" title="Transactions">
