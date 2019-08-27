@@ -165,7 +165,7 @@ const TransactionPage = () => {
 					if (growl) {
 						growl.show({
 							closable: true,
-							detail: 'New transactions created succrssfully.',
+							detail: 'New transactions created successfully.',
 							life: 5000,
 							severity: 'success',
 							sticky: false,
