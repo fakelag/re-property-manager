@@ -208,22 +208,54 @@ const TransactionPage = () => {
 	if (isError)
 		return (<>Network Error</>);
 
-	const treeTableData = transactions.map((tr) => ({
-		children: tr.parts.map((part, index) => ({
+	const treeTableData = transactions.map((tr, trIndex) => ({
+		children: tr.parts.map((part, partIndex) => ({
 			children: [],
 			data: {
-				amount: <p>{part.amount / 100} &euro;</p>,
-				date: '',
+				_isPart: true,
+				amount: part.amount,
+				amountDisplay: (<div className="p-inputgroup">
+				<span className="p-inputgroup-addon">€</span>
+					<InputText
+						id="invoice-amount"
+						type="text"
+						value={part.amount / 100}
+						keyfilter="int"
+						onChange={(e) => {
+							try {
+								const transactionList = transactions;
+								const transaction = {
+									...transactions[trIndex],
+									parts: [...transactions[trIndex].parts],
+								}; // copy it, no references!
+
+								transaction.parts[partIndex].amount
+									= Number.parseInt(e.currentTarget.value, 10) * 100;
+
+								transactionList[trIndex] = transaction;
+
+								setTransactions(transactionList);
+								setEditedTransactions(Array.from(
+									new Set([...editedTransactions, transactionList[trIndex].id]),
+								));
+							} catch (err) {
+								console.error(err);
+							}
+						}}
+					/>
+				</div>),
+				dateDisplay: '',
 				description: <p>For invoice <a onClick={() =>
 					router.push(`/invoice/${part.invoice}`)}>{part.invoice}</a></p>,
 				id: '',
 			},
-			key: `${tr.id}-${index}`,
+			key: `${tr.id}-${partIndex}`,
 		})),
 		data: {
 			...tr,
-			amount: <p>{tr.amount / 100} &euro;</p>,
-			date: <p>{moment(new Date(tr.date)).format('DD.MM.YYYY')}</p>,
+			_isPart: false,
+			amountDisplay: <p>{tr.amount / 100} &euro;</p>,
+			dateDisplay: <p>{moment(new Date(tr.date)).format('DD.MM.YYYY')}</p>,
 		},
 		key: tr.id,
 	}));
@@ -238,18 +270,20 @@ const TransactionPage = () => {
 							rows={20}
 							value={treeTableData}
 							selectionMode="single"
-							// onRowSelect={(e: { originalEvent: Event; data: IInvoice; type: string; }) =>
-							// 	router.push(`/invoice/${e.data.id}`)}
+							// onRowClick={(e) => console.log(e.node)}
 						>
 							<Column
 								expander
 								field="id"
 								header="Id"
-								bodyStyle={{ 'white-space': 'nowrap' }}
+								bodyStyle={{ whiteSpace: 'nowrap' }}
 							/>
-							<Column field="amount" header="Amount" />
+							<Column
+								field="amountDisplay"
+								header="Amount"
+							/>
 							<Column field="description" header="Description" />
-							<Column field="date" header="Date" />
+							<Column field="dateDisplay" header="Date" />
 						</TreeTable>
 						<Dialog
 							header="Upload statements CSV"
