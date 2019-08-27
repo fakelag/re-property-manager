@@ -23,6 +23,7 @@ const TransactionPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isUploadDialog, setIsUploadDialog] = useState(false);
 	const [transactions, setTransactions] = useState<ITransaction[]>([]);
+	const [backupTransactions, setBackupTransactions] = useState<ITransaction[]>([]);
 	const [stmtsJsonAndColumns, setStmtsJsonAndColumns]
 		= useState<{ columns: string[], data: any[] }>({
 			columns: [],
@@ -39,10 +40,21 @@ const TransactionPage = () => {
 
 	useEffect(() => {
 		transactionApi.fetchTransactionList()
-			.then((trList) => setTransactions(trList))
+			.then((trList) => {
+				setTransactions(trList);
+				setBackupTransactions(deepCopyTransactions(trList));
+			})
 			.catch(() => setIsError(true))
 			.finally(() => setIsLoading(false));
 	}, []);
+
+	const deepCopyTransactions = (trList: ITransaction[]) => {
+		return [...trList.map((tr) => ({
+			...tr,
+			parts: [...tr.parts.map((part) =>
+				({ ...part }))],
+		}))];
+	};
 
 	const convertAmount = (amountField: string, useConversion: boolean) => {
 		const amountNoSymbols = amountField.replace(/(?![0-9,\.])./g, '');
@@ -161,7 +173,10 @@ const TransactionPage = () => {
 						});
 					}
 
-					setTransactions([...transactions, ...transactionsCreated]);
+					const trList = [...transactions, ...transactionsCreated];
+
+					setTransactions(trList);
+					setBackupTransactions(deepCopyTransactions(trList));
 					setIsUploadDialog(false);
 				})
 				.catch((err) => {
