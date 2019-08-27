@@ -265,7 +265,24 @@ const createTransactionList = async (transactionList: ITransaction[]): Promise<I
 const updateTransaction = async (transactionId: string, transaction: ITransaction): Promise<ITransaction> => {
 	try {
 		const response = await axios.post<ITransaction>('/api/transaction',
-			{ id: transactionId, transactionIn: transaction });
+			{ id: transactionId, transaction });
+
+		if (response.status !== 200)
+			throw new Error(`Invalid status code: , ${response.status}`);
+
+		return response.data;
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+};
+
+const updateTransactionList = async (transactionUpdateList: Array<{
+	id: string;
+	transaction: ITransaction;
+}>): Promise<ITransaction[]> => {
+	try {
+		const response = await axios.post<ITransaction[]>('/api/transaction/many', transactionUpdateList);
 
 		if (response.status !== 200)
 			throw new Error(`Invalid status code: , ${response.status}`);
@@ -347,6 +364,7 @@ export const transactionApi = {
 	fetchTransaction,
 	fetchTransactionList,
 	updateTransaction,
+	updateTransactionList,
 };
 
 export const userApi = {
