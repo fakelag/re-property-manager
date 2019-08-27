@@ -22,14 +22,16 @@ td {
 	padding-right: 1rem;
 }
 
-.PropertyPage, .ContractPage {
+.PropertyPage, .ContractPage, .TransactionPage {
 	display: flex;
 	justify-content: center;
 	flex-direction: row;
 
 	section:not(:last-child) {
 		margin-bottom: 1rem;
+	}
 
+	section {
 		button {
 			margin-right: 1rem;
 		}
