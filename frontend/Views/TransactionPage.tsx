@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import router from '../router';
+// import router from '../router';
 import ITransaction from '../interfaces/Transaction';
+import IInvoice from '../interfaces/Invoice';
 import moment from 'moment';
 import jsMoney from 'js-money';
 import { useSelector } from 'react-redux';
 import { IStore } from '../store';
-import { transactionApi } from '../api';
+import { transactionApi, invoiceApi } from '../api';
 import { parse } from 'papaparse';
 import { TreeTable } from 'primereact/treetable';
 import { DataTable } from 'primereact/datatable';
@@ -14,6 +15,7 @@ import { Column } from 'primereact/column';
 import { Card } from 'primereact/card';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
+import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 const TransactionPage = () => {
@@ -22,7 +24,10 @@ const TransactionPage = () => {
 	const [isError, setIsError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isUploadDialog, setIsUploadDialog] = useState(false);
+	const [invoices, setInvoices] = useState<IInvoice[]>([]);
 	const [transactions, setTransactions] = useState<ITransaction[]>([]);
+	const [backupTransactions, setBackupTransactions] = useState<ITransaction[]>([]);
+	const [editedTransactions, setEditedTransactions] = useState<string[]>([]);
 	const [stmtsJsonAndColumns, setStmtsJsonAndColumns]
 		= useState<{ columns: string[], data: any[] }>({
 			columns: [],
@@ -39,10 +44,24 @@ const TransactionPage = () => {
 
 	useEffect(() => {
 		transactionApi.fetchTransactionList()
-			.then((trList) => setTransactions(trList))
+			.then((trList) => {
+				setTransactions(trList);
+				setBackupTransactions(deepCopyTransactions(trList));
+			})
 			.catch(() => setIsError(true))
 			.finally(() => setIsLoading(false));
+
+		invoiceApi.fetchInvoiceList()
+			.then((invList) => setInvoices(invList));
 	}, []);
+
+	const deepCopyTransactions = (trList: ITransaction[]) => {
+		return [...trList.map((tr) => ({
+			...tr,
+			parts: [...tr.parts.map((part) =>
+				({ ...part }))],
+		}))];
+	};
 
 	const convertAmount = (amountField: string, useConversion: boolean) => {
 		const amountNoSymbols = amountField.replace(/(?![0-9,\.])./g, '');
@@ -127,6 +146,8 @@ const TransactionPage = () => {
 					summary: 'Select all fields',
 				});
 			}
+
+			return;
 		}
 
 		try {
@@ -153,7 +174,7 @@ const TransactionPage = () => {
 					if (growl) {
 						growl.show({
 							closable: true,
-							detail: 'New transactions created succrssfully.',
+							detail: 'New transactions created successfully.',
 							life: 5000,
 							severity: 'success',
 							sticky: false,
@@ -161,7 +182,10 @@ const TransactionPage = () => {
 						});
 					}
 
-					setTransactions([...transactions, ...transactionsCreated]);
+					const trList = [...transactions, ...transactionsCreated];
+
+					setTransactions(trList);
+					setBackupTransactions(deepCopyTransactions(trList));
 					setIsUploadDialog(false);
 				})
 				.catch((err) => {
@@ -193,27 +217,97 @@ const TransactionPage = () => {
 	if (isError)
 		return (<>Network Error</>);
 
-	const treeTableData = transactions.map((tr) => ({
-		children: tr.parts.map((part, index) => ({
+	const treeTableData = transactions.map((tr, trIndex) => ({
+		children: tr.parts.map((part, partIndex) => ({
 			children: [],
 			data: {
-				amount: <p>{part.amount / 100} &euro;</p>,
-				date: '',
-				description: <p>For invoice <a onClick={() =>
-					router.push(`/invoice/${part.invoice}`)}>{part.invoice}</a></p>,
+				_isPart: true,
+				amount: part.amount,
+				amountDisplay: (<div className="p-inputgroup">
+				<span className="p-inputgroup-addon">€</span>
+					<InputText
+						id="tr-part-amount"
+						type="text"
+						value={(() => {
+							const stringAmount = part.amount.toString();
+							if (stringAmount.length >= 2) {
+								const numPart = stringAmount.substring(0, stringAmount.length - 2);
+								const centPart = stringAmount.substring(stringAmount.length - 2, stringAmount.length);
+								return `${numPart}.${centPart}`;
+							} else if (stringAmount.length === 0) {
+								return '0';
+							} else {
+								return `0.${stringAmount}`;
+							}
+						})()}
+						keyfilter="int"
+						onChange={(e) => {
+							try {
+								const centString = e.currentTarget.value.replace(/[^0-9]+/g, '');
+
+								let centInt = 0;
+								if (centString.length > 0)
+									centInt = Number.parseInt(centString, 10);
+
+								const transactionList = transactions;
+								console.log(centInt);
+								transactionList[trIndex].parts[partIndex].amount = centInt;
+
+								setTransactions(transactionList);
+								setEditedTransactions(Array.from(
+									new Set([...editedTransactions, transactionList[trIndex].id]),
+								));
+							} catch (err) {
+								console.error(err);
+							}
+						}}
+					/>
+				</div>),
+				dateDisplay: '',
+				// description: <p>For invoice <a onClick={() =>
+				// 	router.push(`/invoice/${part.invoice}`)}>{part.invoice}</a></p>,
+				descriptionDisplay: (<div className="p-inputgroup">
+					{/* <span className="p-inputgroup-addon">
+						<Button label="Open" />
+					</span> */}
+					<Button
+						label="Open"
+						onClick={() => window.open(`/invoice/${part.invoice}`, '_blank')}
+					/>
+					<Dropdown
+						placeholder="Select field"
+						value={part.invoice}
+						options={invoices.map((inv) => ({
+							label: inv.id,
+							value: inv.id,
+						}))}
+						onChange={(e) => {
+							const transactionList = transactions;
+
+							transactionList[trIndex].parts[partIndex].invoice = e.value;
+
+							setTransactions(transactionList);
+							setEditedTransactions(Array.from(
+								new Set([...editedTransactions, transactionList[trIndex].id]),
+							));
+						}}
+					/>
+				</div>),
 				id: '',
 			},
-			key: `${tr.id}-${index}`,
+			key: `${tr.id}-${partIndex}`,
 		})),
 		data: {
 			...tr,
-			amount: <p>{tr.amount / 100} &euro;</p>,
-			date: <p>{moment(new Date(tr.date)).format('DD.MM.YYYY')}</p>,
+			_isPart: false,
+			amountDisplay: <p>{tr.amount / 100} &euro;</p>,
+			dateDisplay: <p>{moment(new Date(tr.date)).format('DD.MM.YYYY')}</p>,
+			descriptionDisplay: tr.description,
 		},
 		key: tr.id,
 	}));
 
-	return (<div className="ContractPage">
+	return (<div className="TransactionPage">
 		{isLoading ? <ProgressSpinner /> :
 			<div className="PageCards">
 				<Card className="PageCard" title="Transactions">
@@ -223,18 +317,24 @@ const TransactionPage = () => {
 							rows={20}
 							value={treeTableData}
 							selectionMode="single"
-							// onRowSelect={(e: { originalEvent: Event; data: IInvoice; type: string; }) =>
-							// 	router.push(`/invoice/${e.data.id}`)}
 						>
 							<Column
 								expander
 								field="id"
 								header="Id"
-								bodyStyle={{ 'white-space': 'nowrap' }}
+								bodyStyle={{ whiteSpace: 'nowrap' }}
 							/>
-							<Column field="amount" header="Amount" />
-							<Column field="description" header="Description" />
-							<Column field="date" header="Date" />
+							<Column
+								field="amountDisplay"
+								header="Amount"
+								style={{ width: '14rem' }}
+							/>
+							<Column
+								field="descriptionDisplay"
+								header="Description"
+								style={{ overflow: 'visible', width: '16rem' }}
+							/>
+							<Column field="dateDisplay" header="Date" />
 						</TreeTable>
 						<Dialog
 							header="Upload statements CSV"
@@ -312,9 +412,69 @@ const TransactionPage = () => {
 						</Dialog>
 					</section>
 					<section>
+						{editedTransactions.length > 0 && <Button
+							type="button"
+							className="p-button-success"
+							label="Update Transactions"
+							icon="pi pi-save"
+							iconPos="left"
+							onClick={() => {
+								transactionApi.updateTransactionList(editedTransactions.map((transactionId) => {
+									const editedTransaction = transactions.find((tr) => tr.id === transactionId);
+
+									if (editedTransaction === undefined)
+										throw new Error(`Unable to find transaction for edit id=${transactionId}`);
+
+									return {
+										id: editedTransaction.id,
+										transaction: editedTransaction,
+									};
+								})).then((updatedTransactions) => {
+									if (growl) {
+										growl.show({
+											closable: true,
+											detail: 'Transactions updated successfully.',
+											life: 5000,
+											severity: 'success',
+											sticky: false,
+											summary: 'Transactions updated',
+										});
+									}
+
+									const newTransactions = transactions.map((oldTr) =>
+										updatedTransactions.find((newTr) => newTr.id === oldTr.id) || oldTr,
+									);
+									setTransactions(newTransactions);
+									setBackupTransactions(deepCopyTransactions(newTransactions));
+								}).catch((err) => {
+									if (growl) {
+										growl.show({
+											closable: true,
+											detail: String(err),
+											life: 5000,
+											severity: 'error',
+											sticky: false,
+											summary: 'Unable to update transactions',
+										});
+									}
+								}).finally(() => setEditedTransactions([]));
+							}}
+						/>}
+						{editedTransactions.length > 0 && <Button
+							type="button"
+							className="p-button-danger"
+							label="Cancel Changes"
+							icon="pi pi-trash"
+							iconPos="left"
+							onClick={() => {
+								setTransactions(deepCopyTransactions(backupTransactions));
+								setEditedTransactions([]);
+							}}
+						/>}
 						<Button
 							type="button"
 							className="p-button-info"
+							style={{ marginLeft: 'auto' }}
 							label="Upload statements"
 							icon="pi pi-plus"
 							iconPos="left"

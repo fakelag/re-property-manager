@@ -141,6 +141,20 @@ const fetchInvoiceListForContract = async (contractId: string): Promise<IInvoice
 	}
 };
 
+const fetchInvoiceList = async (): Promise<IInvoice[]> => {
+	try {
+		const response = await axios.get<IInvoice[]>(`/api/invoice`);
+
+		if (response.status !== 200)
+			throw new Error(`Invalid status code: , ${response.status}`);
+
+		return response.data;
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+};
+
 const fetchInvoice = async (invoiceId: string): Promise<IInvoice> => {
 	try {
 		const response = await axios.get<IInvoice>(`/api/invoice/${invoiceId}`);
@@ -265,7 +279,24 @@ const createTransactionList = async (transactionList: ITransaction[]): Promise<I
 const updateTransaction = async (transactionId: string, transaction: ITransaction): Promise<ITransaction> => {
 	try {
 		const response = await axios.post<ITransaction>('/api/transaction',
-			{ id: transactionId, transactionIn: transaction });
+			{ id: transactionId, transaction });
+
+		if (response.status !== 200)
+			throw new Error(`Invalid status code: , ${response.status}`);
+
+		return response.data;
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+};
+
+const updateTransactionList = async (transactionUpdateList: Array<{
+	id: string;
+	transaction: ITransaction;
+}>): Promise<ITransaction[]> => {
+	try {
+		const response = await axios.post<ITransaction[]>('/api/transaction/many', transactionUpdateList);
 
 		if (response.status !== 200)
 			throw new Error(`Invalid status code: , ${response.status}`);
@@ -336,6 +367,7 @@ export const invoiceApi = {
 	createInvoice,
 	deleteInvoice,
 	fetchInvoice,
+	fetchInvoiceList,
 	fetchInvoiceListForContract,
 	updateInvoice,
 };
@@ -347,6 +379,7 @@ export const transactionApi = {
 	fetchTransaction,
 	fetchTransactionList,
 	updateTransaction,
+	updateTransactionList,
 };
 
 export const userApi = {

@@ -1,3 +1,4 @@
+using System;
 using backend.Models;
 using backend.Services;
 using backend.Attributes;
@@ -6,6 +7,12 @@ using System.Collections.Generic;
 
 namespace backend.Controllers
 {
+	public class UpdateTransactionFields
+	{
+		public string id;
+		public Transaction transaction;
+	}
+
 	[Route("api/[controller]")]
 	[ApiController]
 	public class TransactionController : ControllerBase
@@ -59,20 +66,60 @@ namespace backend.Controllers
 
 		[Authenticate]
 		[HttpPost("{id:length(24)}")]
-		public ActionResult<Transaction> Update(string id, Transaction transactionIn)
+		public ActionResult<Transaction> Update(UpdateTransactionFields updateTransaction)
 		{
 			var user = (User) Request.HttpContext.Items["user"];
 
-			Transaction transaction = _transactionService.Get(id, user.Id);
+			Transaction transaction = _transactionService.Get(updateTransaction.id, user.Id);
 
 			if (transaction == null)
 				return NotFound();
 
-			transactionIn.Id = transaction.Id;
-			transactionIn.Owner = transaction.Owner;
+			updateTransaction.transaction.Id = transaction.Id;
+			updateTransaction.transaction.Owner = transaction.Owner;
 
-			_transactionService.Update(id, transactionIn);
-			return transactionIn;
+			try
+			{
+				return _transactionService.Update(updateTransaction.id, updateTransaction.transaction);
+			}
+			catch (Exception e)
+			{
+				// todo: handle this
+				throw e;
+			}
+		}
+
+		[Authenticate]
+		[Route("many")]
+		[HttpPost("{id:length(24)}")]
+		public ActionResult<Transaction[]> UpdateMany([FromBody] UpdateTransactionFields[] updateTransactionList)
+		{
+			var user = (User) Request.HttpContext.Items["user"];
+
+			var updatedTransactions = new List<Transaction>();
+			foreach (UpdateTransactionFields updateTransaction in updateTransactionList)
+			{
+				Transaction transaction = _transactionService.Get(updateTransaction.id, user.Id);
+
+				if (transaction == null)
+					continue;
+
+				updateTransaction.transaction.Id = transaction.Id;
+				updateTransaction.transaction.Owner = transaction.Owner;
+
+				try
+				{
+					updatedTransactions.Add(_transactionService.Update(updateTransaction.id,
+						updateTransaction.transaction));
+				}
+				catch (Exception e)
+				{
+					// todo: handle this
+					throw e;
+				}
+			}
+
+			return updatedTransactions.ToArray();
 		}
 
 		[Authenticate]

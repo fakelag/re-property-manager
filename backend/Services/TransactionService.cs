@@ -1,3 +1,4 @@
+using System;
 using backend.Models;
 using MongoDB.Driver;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace backend.Services
 		{
 			transaction.Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
 			transaction.Owner = userId;
+			transaction.Parts = new TransactionPart[0];
 
 			_transactions.InsertOne(transaction);
 			return transaction;
@@ -40,6 +42,7 @@ namespace backend.Services
 				insertList[i] = transactionList[i];
 				insertList[i].Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
 				insertList[i].Owner = userId;
+				insertList[i].Parts = new TransactionPart[0];
 			}
 
 			_transactions.InsertMany(insertList);
@@ -48,6 +51,24 @@ namespace backend.Services
 
         public Transaction Update(string id, Transaction transaction)
 		{
+			var isNegative = transaction.Amount < 0;
+			var totalCents = 0;
+
+			foreach (var part in transaction.Parts)
+			{
+				if (isNegative && part.Amount > 0)
+					throw new Exception("tr_parts_positive_in_negative");
+				else if (!isNegative && part.Amount < 0)
+					throw new Exception("tr_parts_negative_in_positive");
+
+				totalCents += part.Amount;
+
+				if (isNegative && totalCents < transaction.Amount)
+					throw new Exception("tr_parts_total_amount_too_low");
+				else if (!isNegative && totalCents > transaction.Amount)
+					throw new Exception("tr_parts_total_amount_too_high");
+			}
+
 			_transactions.ReplaceOne(tr => tr.Id == id, transaction);
 			return transaction;
 		}
