@@ -264,8 +264,35 @@ const TransactionPage = () => {
 					/>
 				</div>),
 				dateDisplay: '',
-				description: <p>For invoice <a onClick={() =>
-					router.push(`/invoice/${part.invoice}`)}>{part.invoice}</a></p>,
+				// description: <p>For invoice <a onClick={() =>
+				// 	router.push(`/invoice/${part.invoice}`)}>{part.invoice}</a></p>,
+				descriptionDisplay: (<div className="p-inputgroup">
+					{/* <span className="p-inputgroup-addon">
+						<Button label="Open" />
+					</span> */}
+					<Button
+						label="Open"
+						onClick={() => window.open(`/invoice/${part.invoice}`, '_blank')}
+					/>
+					<Dropdown
+						placeholder="Select field"
+						value={part.invoice}
+						options={invoices.map((inv) => ({
+							label: inv.id,
+							value: inv.id,
+						}))}
+						onChange={(e) => {
+							const transactionList = transactions;
+
+							transactionList[trIndex].parts[partIndex].invoice = e.value;
+
+							setTransactions(transactionList);
+							setEditedTransactions(Array.from(
+								new Set([...editedTransactions, transactionList[trIndex].id]),
+							));
+						}}
+					/>
+				</div>),
 				id: '',
 			},
 			key: `${tr.id}-${partIndex}`,
@@ -275,6 +302,7 @@ const TransactionPage = () => {
 			_isPart: false,
 			amountDisplay: <p>{tr.amount / 100} &euro;</p>,
 			dateDisplay: <p>{moment(new Date(tr.date)).format('DD.MM.YYYY')}</p>,
+			descriptionDisplay: tr.description,
 		},
 		key: tr.id,
 	}));
@@ -289,7 +317,6 @@ const TransactionPage = () => {
 							rows={20}
 							value={treeTableData}
 							selectionMode="single"
-							// onRowClick={(e) => console.log(e.node)}
 						>
 							<Column
 								expander
