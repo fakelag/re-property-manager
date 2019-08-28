@@ -1,3 +1,4 @@
+using System;
 using backend.Models;
 using backend.Services;
 using backend.Attributes;
@@ -77,8 +78,15 @@ namespace backend.Controllers
 			updateTransaction.transaction.Id = transaction.Id;
 			updateTransaction.transaction.Owner = transaction.Owner;
 
-			_transactionService.Update(updateTransaction.id, updateTransaction.transaction);
-			return updateTransaction.transaction;
+			try
+			{
+				return _transactionService.Update(updateTransaction.id, updateTransaction.transaction);
+			}
+			catch (Exception e)
+			{
+				// todo: handle this
+				throw e;
+			}
 		}
 
 		[Authenticate]
@@ -99,8 +107,16 @@ namespace backend.Controllers
 				updateTransaction.transaction.Id = transaction.Id;
 				updateTransaction.transaction.Owner = transaction.Owner;
 
-				updatedTransactions.Add(_transactionService.Update(updateTransaction.id,
-					updateTransaction.transaction));
+				try
+				{
+					updatedTransactions.Add(_transactionService.Update(updateTransaction.id,
+						updateTransaction.transaction));
+				}
+				catch (Exception e)
+				{
+					// todo: handle this
+					throw e;
+				}
 			}
 
 			return updatedTransactions.ToArray();
