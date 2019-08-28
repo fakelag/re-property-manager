@@ -141,6 +141,8 @@ const TransactionPage = () => {
 					summary: 'Select all fields',
 				});
 			}
+
+			return;
 		}
 
 		try {
