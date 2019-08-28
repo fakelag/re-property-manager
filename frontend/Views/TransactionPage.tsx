@@ -300,8 +300,13 @@ const TransactionPage = () => {
 							<Column
 								field="amountDisplay"
 								header="Amount"
+								style={{ width: '14rem' }}
 							/>
-							<Column field="description" header="Description" />
+							<Column
+								field="descriptionDisplay"
+								header="Description"
+								style={{ overflow: 'visible', width: '16rem' }}
+							/>
 							<Column field="dateDisplay" header="Date" />
 						</TreeTable>
 						<Dialog
