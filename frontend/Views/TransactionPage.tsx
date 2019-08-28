@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import router from '../router';
+// import router from '../router';
 import ITransaction from '../interfaces/Transaction';
+import IInvoice from '../interfaces/Invoice';
 import moment from 'moment';
 import jsMoney from 'js-money';
 import { useSelector } from 'react-redux';
 import { IStore } from '../store';
-import { transactionApi } from '../api';
+import { transactionApi, invoiceApi } from '../api';
 import { parse } from 'papaparse';
 import { TreeTable } from 'primereact/treetable';
 import { DataTable } from 'primereact/datatable';
@@ -23,6 +24,7 @@ const TransactionPage = () => {
 	const [isError, setIsError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isUploadDialog, setIsUploadDialog] = useState(false);
+	const [invoices, setInvoices] = useState<IInvoice[]>([]);
 	const [transactions, setTransactions] = useState<ITransaction[]>([]);
 	const [backupTransactions, setBackupTransactions] = useState<ITransaction[]>([]);
 	const [editedTransactions, setEditedTransactions] = useState<string[]>([]);
@@ -48,6 +50,9 @@ const TransactionPage = () => {
 			})
 			.catch(() => setIsError(true))
 			.finally(() => setIsLoading(false));
+
+		invoiceApi.fetchInvoiceList()
+			.then((invList) => setInvoices(invList));
 	}, []);
 
 	const deepCopyTransactions = (trList: ITransaction[]) => {
