@@ -223,20 +223,30 @@ const TransactionPage = () => {
 					<InputText
 						id="tr-part-amount"
 						type="text"
-						value={part.amount / 100}
+						value={(() => {
+							const stringAmount = part.amount.toString();
+							if (stringAmount.length >= 2) {
+								const numPart = stringAmount.substring(0, stringAmount.length - 2);
+								const centPart = stringAmount.substring(stringAmount.length - 2, stringAmount.length);
+								return `${numPart}.${centPart}`;
+							} else if (stringAmount.length === 0) {
+								return '0';
+							} else {
+								return `0.${stringAmount}`;
+							}
+						})()}
 						keyfilter="int"
 						onChange={(e) => {
 							try {
+								const centString = e.currentTarget.value.replace(/[^0-9]+/g, '');
+
+								let centInt = 0;
+								if (centString.length > 0)
+									centInt = Number.parseInt(centString, 10);
+
 								const transactionList = transactions;
-								const transaction = {
-									...transactions[trIndex],
-									parts: [...transactions[trIndex].parts],
-								}; // copy it, no references!
-
-								transaction.parts[partIndex].amount
-									= Number.parseInt(e.currentTarget.value, 10) * 100;
-
-								transactionList[trIndex] = transaction;
+								console.log(centInt);
+								transactionList[trIndex].parts[partIndex].amount = centInt;
 
 								setTransactions(transactionList);
 								setEditedTransactions(Array.from(
