@@ -23,6 +23,7 @@ namespace backend.Services
 		{
 			transaction.Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
 			transaction.Owner = userId;
+			transaction.Parts = new TransactionPart[0];
 
 			_transactions.InsertOne(transaction);
 			return transaction;
@@ -40,6 +41,7 @@ namespace backend.Services
 				insertList[i] = transactionList[i];
 				insertList[i].Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString();
 				insertList[i].Owner = userId;
+				insertList[i].Parts = new TransactionPart[0];
 			}
 
 			_transactions.InsertMany(insertList);
