@@ -16,6 +16,13 @@ td {
 	overflow-x: hidden;
 }
 
+input {
+	&[is-error="1"] {
+		color: red;
+		border-color: red;
+	}
+}
+
 .Dashboard {
 	padding-top: 1rem;
 	padding-left: 1rem;
