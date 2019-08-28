@@ -141,6 +141,20 @@ const fetchInvoiceListForContract = async (contractId: string): Promise<IInvoice
 	}
 };
 
+const fetchInvoiceList = async (): Promise<IInvoice[]> => {
+	try {
+		const response = await axios.get<IInvoice[]>(`/api/invoice`);
+
+		if (response.status !== 200)
+			throw new Error(`Invalid status code: , ${response.status}`);
+
+		return response.data;
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+};
+
 const fetchInvoice = async (invoiceId: string): Promise<IInvoice> => {
 	try {
 		const response = await axios.get<IInvoice>(`/api/invoice/${invoiceId}`);
@@ -353,6 +367,7 @@ export const invoiceApi = {
 	createInvoice,
 	deleteInvoice,
 	fetchInvoice,
+	fetchInvoiceList,
 	fetchInvoiceListForContract,
 	updateInvoice,
 };
