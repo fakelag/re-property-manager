@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import router from '../router';
+import jsMoney from 'js-money';
 import { useSelector } from 'react-redux';
 import { IStore } from '../store';
 import { propertyApi } from '../api';
@@ -130,7 +131,7 @@ const PropertyCreator = () => {
 						<InputText
 							id="input-apartment-debtfree-price"
 							type="text"
-							value={property.debtFreePrice / 100.0}
+							value={jsMoney.fromInteger(property.debtFreePrice, 'EUR').toString()}
 							onChange={(e) => {
 									try {
 										setProperty({
@@ -155,7 +156,7 @@ const PropertyCreator = () => {
 						<InputText
 							id="input-apartment-selling-price"
 							type="text"
-							value={property.sellingPrice / 100.0}
+							value={jsMoney.fromInteger(property.sellingPrice, 'EUR').toString()}
 							onChange={(e) => {
 									try {
 										setProperty({
@@ -180,7 +181,7 @@ const PropertyCreator = () => {
 						<InputText
 							id="input-apartment-financefee"
 							type="text"
-							value={property.financeFee / 100.0}
+							value={jsMoney.fromInteger(property.financeFee, 'EUR').toString()}
 							onChange={(e) => {
 									try {
 										setProperty({
@@ -205,7 +206,7 @@ const PropertyCreator = () => {
 						<InputText
 							id="input-apartment-maintenancefee"
 							type="text"
-							value={property.maintenanceFee / 100.0}
+							value={jsMoney.fromInteger(property.maintenanceFee, 'EUR').toString()}
 							onChange={(e) => {
 									try {
 										setProperty({
@@ -230,7 +231,7 @@ const PropertyCreator = () => {
 						<InputText
 							id="input-apartment-repairfee"
 							type="text"
-							value={property.repairFee / 100.0}
+							value={jsMoney.fromInteger(property.repairFee, 'EUR').toString()}
 							onChange={(e) => {
 									try {
 										setProperty({

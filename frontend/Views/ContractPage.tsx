@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import router from '../router';
 import IContract from '../interfaces/Contract';
 import IInvoice from '../interfaces/Invoice';
+import jsMoney from 'js-money';
 import { useSelector } from 'react-redux';
 import { IStore } from '../store';
 import { contractApi, invoiceApi } from '../api';
@@ -80,8 +81,8 @@ const ContractPage = ({ match }: { match: MatchParams<{ propertyId: string, cont
 								rows={7}
 								value={invoiceList.map((inv) => ({
 									...inv,
-									amount: <p>{inv.amount / 100} &euro;</p>,
-									amountPaid: <p>{inv.amountPaid / 100} &euro;</p>,
+									amount: <p>{jsMoney.fromInteger(inv.amount, inv.currency).toString()} &euro;</p>,
+									amountPaid: <p>{jsMoney.fromInteger(inv.amountPaid, inv.currency).toString()} &euro;</p>,
 								}))}
 								selectionMode="single"
 								onRowSelect={(e: { originalEvent: Event; data: IInvoice; type: string; }) =>
