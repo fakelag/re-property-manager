@@ -170,51 +170,51 @@ const ContractCreator = ({ match, location }: { match: MatchParams<{ invoiceId?:
 						autoResize={true}
 					/>
 				</section>
+				<section>
+					<Button
+						type="submit"
+						className={match.params.invoiceId ? 'p-button-info' : 'p-button-success'}
+						label={match.params.invoiceId ? 'Save' : 'Create'}
+						icon="pi pi-check"
+						iconPos="left"
+					/>
+					{match.params.invoiceId && <Button
+						type="button"
+						className="p-button-danger"
+						label="Delete"
+						icon="pi pi-trash"
+						iconPos="left"
+						onClick={() => {
+							invoiceApi.deleteInvoice(match.params.invoiceId!)
+								.then(() => router.goBack())
+								.catch(() => {
+									if (growl) {
+										growl.show({
+											closable: true,
+											detail: 'A network error occurred while deleting the invoice.',
+											life: 5000,
+											severity: 'error',
+											sticky: false,
+											summary: 'Network error',
+										});
+									}
+								})
+								.finally(() => {
+									if (growl) {
+										growl.show({
+											closable: true,
+											detail: 'Invoice has been deleted.',
+											life: 5000,
+											severity: 'success',
+											sticky: false,
+											summary: 'Invoice deleted',
+										});
+									}
+								});
+						}}
+					/>}
+				</section>
 			</Card>
-		</article>
-		<article>
-			<Button
-				type="submit"
-				className={match.params.invoiceId ? 'p-button-info' : 'p-button-success'}
-				label={match.params.invoiceId ? 'Save' : 'Create'}
-				icon="pi pi-check"
-				iconPos="left"
-			/>
-			{match.params.invoiceId && <Button
-				type="button"
-				className="p-button-danger"
-				label="Delete"
-				icon="pi pi-trash"
-				iconPos="left"
-				onClick={() => {
-					invoiceApi.deleteInvoice(match.params.invoiceId!)
-						.then(() => router.goBack())
-						.catch(() => {
-							if (growl) {
-								growl.show({
-									closable: true,
-									detail: 'A network error occurred while deleting the invoice.',
-									life: 5000,
-									severity: 'error',
-									sticky: false,
-									summary: 'Network error',
-								});
-							}
-						})
-						.finally(() => {
-							if (growl) {
-								growl.show({
-									closable: true,
-									detail: 'Invoice has been deleted.',
-									life: 5000,
-									severity: 'success',
-									sticky: false,
-									summary: 'Invoice deleted',
-								});
-							}
-						});
-				}}
-			/>}
 		</article>
 	</form>);
 };
