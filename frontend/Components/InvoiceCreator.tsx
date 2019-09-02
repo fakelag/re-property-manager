@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { IStore } from '../store';
 import { match as MatchParams } from 'react-router';
 import { Location } from 'history';
-import { invoiceApi } from '../api';
+import { invoiceApi, contractApi } from '../api';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -121,26 +121,8 @@ const ContractCreator = ({ match, location }: { match: MatchParams<{ invoiceId?:
 									}
 								}}
 							/>
-							<span className="p-inputgroup-addon">.00</span>
 							<label htmlFor="invoice-amount">Amount</label>
 						</div>
-					</span>
-					<span className="p-float-label">
-						<InputText
-							disabled //={!!match.params.invoiceId}
-							id="invoice-contract"
-							type="text"
-							value={invoice.linkedContract || ''}
-							keyfilter="int"
-							style={{ width: '100%' }}
-							onChange={(e) => {
-								setInvoice({
-									...invoice,
-									linkedContract: e.currentTarget.value,
-								});
-							}}
-						/>
-						<label htmlFor="invoice-contract">Contract</label>
 					</span>
 					<span className="p-float-label">
 						<Calendar
@@ -157,6 +139,34 @@ const ContractCreator = ({ match, location }: { match: MatchParams<{ invoiceId?:
 							showButtonBar={false}
 						/>
 						<label htmlFor="input-rent-dom">Due Date</label>
+					</span>
+					<span className="p-float-label">
+						<div className="p-inputgroup">
+							{invoice.linkedContract && <Button
+								type="button"
+								label="View"
+								onClick={() => {
+									contractApi.fetchContract(invoice.linkedContract!)
+										.then((contract) => router.push(`/contract/${contract.property}/${invoice.linkedContract}`))
+										.catch((err) => console.error(err));
+								}}
+							/>}
+							<InputText
+								disabled
+								id="invoice-contract"
+								type="text"
+								value={invoice.linkedContract || ''}
+								keyfilter="int"
+								style={{ width: '100%' }}
+								onChange={(e) => {
+									setInvoice({
+										...invoice,
+										linkedContract: e.currentTarget.value,
+									});
+								}}
+							/>
+							<label htmlFor="invoice-contract">Contract</label>
+						</div>
 					</span>
 					<InputTextarea
 						placeholder="Invoice description"
