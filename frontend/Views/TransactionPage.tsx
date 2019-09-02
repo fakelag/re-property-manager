@@ -271,7 +271,7 @@ const TransactionPage = () => {
 						<Button label="Open" />
 					</span> */}
 					<Button
-						label="Open"
+						label="View"
 						onClick={() => window.open(`/invoice/${part.invoice}`, '_blank')}
 					/>
 					<Dropdown
@@ -300,7 +300,17 @@ const TransactionPage = () => {
 		data: {
 			...tr,
 			_isPart: false,
-			amountDisplay: <p>{tr.amount / 100} &euro;</p>,
+			amountDisplay: <p>{jsMoney.fromInteger(tr.amount, tr.currency).toString()} &euro; {tr.parts.length
+				? <p style={{
+						color: '#00c3ff',
+						display: 'inline',
+						fontSize: '0.62rem',
+					}}>
+						&nbsp;({jsMoney.fromInteger(tr.parts.map((part) => part.amount)
+							.reduce((prevValue, curValue) => prevValue + curValue), tr.currency)
+								.toString()} &euro; linked)
+				</p>
+				: undefined}</p>,
 			dateDisplay: <p>{moment(new Date(tr.date)).format('DD.MM.YYYY')}</p>,
 			descriptionDisplay: tr.description,
 		},

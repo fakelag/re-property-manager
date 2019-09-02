@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import jsMoney from 'js-money';
 import { useSelector } from 'react-redux';
 import { IStore } from '../store';
 import { match as MatchParams } from 'react-router';
 import { Location } from 'history';
-import { invoiceApi } from '../api';
+import { invoiceApi, contractApi } from '../api';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -107,7 +108,7 @@ const ContractCreator = ({ match, location }: { match: MatchParams<{ invoiceId?:
 							<InputText
 								id="invoice-amount"
 								type="text"
-								value={invoice.amount / 100}
+								value={jsMoney.fromInteger(invoice.amount, invoice.currency).toString()}
 								keyfilter="int"
 								onChange={(e) => {
 									try {
@@ -120,26 +121,8 @@ const ContractCreator = ({ match, location }: { match: MatchParams<{ invoiceId?:
 									}
 								}}
 							/>
-							<span className="p-inputgroup-addon">.00</span>
 							<label htmlFor="invoice-amount">Amount</label>
 						</div>
-					</span>
-					<span className="p-float-label">
-						<InputText
-							disabled //={!!match.params.invoiceId}
-							id="invoice-contract"
-							type="text"
-							value={invoice.linkedContract || ''}
-							keyfilter="int"
-							style={{ width: '100%' }}
-							onChange={(e) => {
-								setInvoice({
-									...invoice,
-									linkedContract: e.currentTarget.value,
-								});
-							}}
-						/>
-						<label htmlFor="invoice-contract">Contract</label>
 					</span>
 					<span className="p-float-label">
 						<Calendar
@@ -157,6 +140,34 @@ const ContractCreator = ({ match, location }: { match: MatchParams<{ invoiceId?:
 						/>
 						<label htmlFor="input-rent-dom">Due Date</label>
 					</span>
+					<span className="p-float-label">
+						<div className="p-inputgroup">
+							{invoice.linkedContract && <Button
+								type="button"
+								label="View"
+								onClick={() => {
+									contractApi.fetchContract(invoice.linkedContract!)
+										.then((contract) => router.push(`/contract/${contract.property}/${invoice.linkedContract}`))
+										.catch((err) => console.error(err));
+								}}
+							/>}
+							<InputText
+								disabled
+								id="invoice-contract"
+								type="text"
+								value={invoice.linkedContract || ''}
+								keyfilter="int"
+								style={{ width: '100%' }}
+								onChange={(e) => {
+									setInvoice({
+										...invoice,
+										linkedContract: e.currentTarget.value,
+									});
+								}}
+							/>
+							<label htmlFor="invoice-contract">Contract</label>
+						</div>
+					</span>
 					<InputTextarea
 						placeholder="Invoice description"
 						rows={5}
@@ -170,51 +181,51 @@ const ContractCreator = ({ match, location }: { match: MatchParams<{ invoiceId?:
 						autoResize={true}
 					/>
 				</section>
+				<section>
+					<Button
+						type="submit"
+						className={match.params.invoiceId ? 'p-button-info' : 'p-button-success'}
+						label={match.params.invoiceId ? 'Save' : 'Create'}
+						icon="pi pi-check"
+						iconPos="left"
+					/>
+					{match.params.invoiceId && <Button
+						type="button"
+						className="p-button-danger"
+						label="Delete"
+						icon="pi pi-trash"
+						iconPos="left"
+						onClick={() => {
+							invoiceApi.deleteInvoice(match.params.invoiceId!)
+								.then(() => router.goBack())
+								.catch(() => {
+									if (growl) {
+										growl.show({
+											closable: true,
+											detail: 'A network error occurred while deleting the invoice.',
+											life: 5000,
+											severity: 'error',
+											sticky: false,
+											summary: 'Network error',
+										});
+									}
+								})
+								.finally(() => {
+									if (growl) {
+										growl.show({
+											closable: true,
+											detail: 'Invoice has been deleted.',
+											life: 5000,
+											severity: 'success',
+											sticky: false,
+											summary: 'Invoice deleted',
+										});
+									}
+								});
+						}}
+					/>}
+				</section>
 			</Card>
-		</article>
-		<article>
-			<Button
-				type="submit"
-				className={match.params.invoiceId ? 'p-button-info' : 'p-button-success'}
-				label={match.params.invoiceId ? 'Save' : 'Create'}
-				icon="pi pi-check"
-				iconPos="left"
-			/>
-			{match.params.invoiceId && <Button
-				type="button"
-				className="p-button-danger"
-				label="Delete"
-				icon="pi pi-trash"
-				iconPos="left"
-				onClick={() => {
-					invoiceApi.deleteInvoice(match.params.invoiceId!)
-						.then(() => router.goBack())
-						.catch(() => {
-							if (growl) {
-								growl.show({
-									closable: true,
-									detail: 'A network error occurred while deleting the invoice.',
-									life: 5000,
-									severity: 'error',
-									sticky: false,
-									summary: 'Network error',
-								});
-							}
-						})
-						.finally(() => {
-							if (growl) {
-								growl.show({
-									closable: true,
-									detail: 'Invoice has been deleted.',
-									life: 5000,
-									severity: 'success',
-									sticky: false,
-									summary: 'Invoice deleted',
-								});
-							}
-						});
-				}}
-			/>}
 		</article>
 	</form>);
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import jsMoney from 'js-money';
 import { useSelector } from 'react-redux';
 import { IStore } from '../store';
 import { match as MatchParams } from 'react-router';
@@ -208,7 +209,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 							<InputText
 								id="input-rent-amount"
 								type="text"
-								value={contract.paymentAmount / 100.0}
+								value={jsMoney.fromInteger(contract.paymentAmount, 'EUR').toString()}
 								onChange={(e) => {
 										try {
 											setContract({
