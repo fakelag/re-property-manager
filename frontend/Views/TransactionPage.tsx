@@ -271,7 +271,7 @@ const TransactionPage = () => {
 						<Button label="Open" />
 					</span> */}
 					<Button
-						label="Open"
+						label="View"
 						onClick={() => window.open(`/invoice/${part.invoice}`, '_blank')}
 					/>
 					<Dropdown
