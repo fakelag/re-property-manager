@@ -300,7 +300,16 @@ const TransactionPage = () => {
 		data: {
 			...tr,
 			_isPart: false,
-			amountDisplay: <p>{tr.amount / 100} &euro;</p>,
+			amountDisplay: <p>{tr.amount / 100} &euro; {tr.parts.length
+				? <p style={{
+						color: '#00c3ff',
+						display: 'inline',
+						fontSize: '0.62rem',
+					}}>
+						&nbsp;({tr.parts.map((part) => part.amount)
+							.reduce((prevValue, curValue) => prevValue + curValue) / 100} &euro; linked)
+				</p>
+				: undefined}</p>,
 			dateDisplay: <p>{moment(new Date(tr.date)).format('DD.MM.YYYY')}</p>,
 			descriptionDisplay: tr.description,
 		},
