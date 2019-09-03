@@ -224,7 +224,6 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 									}
 								}
 							/>
-							<span className="p-inputgroup-addon">.00</span>
 							<label htmlFor="input-rent-amount">Payment Amount</label>
 						</div>
 					</span>

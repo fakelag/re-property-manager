@@ -146,7 +146,6 @@ const PropertyCreator = () => {
 								}
 							}
 						/>
-						<span className="p-inputgroup-addon">.00</span>
 						<label htmlFor="input-apartment-debtfree-price">Debt Free Price</label>
 					</div>
 				</span>
@@ -171,7 +170,6 @@ const PropertyCreator = () => {
 								}
 							}
 						/>
-						<span className="p-inputgroup-addon">.00</span>
 						<label htmlFor="input-apartment-selling-price">Selling Price</label>
 					</div>
 				</span>
@@ -196,7 +194,6 @@ const PropertyCreator = () => {
 								}
 							}
 						/>
-						<span className="p-inputgroup-addon">.00</span>
 						<label htmlFor="input-apartment-financefee">Finance Fee</label>
 					</div>
 				</span>
@@ -221,7 +218,6 @@ const PropertyCreator = () => {
 								}
 							}
 						/>
-						<span className="p-inputgroup-addon">.00</span>
 						<label htmlFor="input-apartment-maintenancefee">Maintenance Fee</label>
 					</div>
 				</span>
@@ -246,7 +242,6 @@ const PropertyCreator = () => {
 								}
 							}
 						/>
-						<span className="p-inputgroup-addon">.00</span>
 						<label htmlFor="input-apartment-repairfee">Repair Fee</label>
 					</div>
 				</span>
