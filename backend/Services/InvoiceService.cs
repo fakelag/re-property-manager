@@ -96,7 +96,19 @@ namespace backend.Services
 			_invoices.FindOneAndDelete(inv => inv.Id == id);
 		}
 
-		private Invoice UpdateAmountPaid(Invoice invoice, List<Transaction> transactions) {
+		public void UpdateContractInvoices(RentalContract contract)
+		{
+			var property = _contractService.GetProperty(contract);
+			var invoiceList = ListByContract(property.Owner, contract.Id);
+
+			var endDate = contract.EndDate != null ? contract.EndDate : DateTime.Now;
+			var beginDate = contract.BeginDate;
+
+			// var firstPaymentDOM = beginDate.Day > contract.PaymentDayOfMonth
+		}
+
+		private Invoice UpdateAmountPaid(Invoice invoice, List<Transaction> transactions)
+		{
 			if (invoice == null)
 				return null;
 
@@ -113,8 +125,9 @@ namespace backend.Services
 
 			return invoice;
 		}
-		
-		private List<Invoice> UpdateAmountsPaid(List<Invoice> invoices, List<Transaction> transactions) {
+
+		private List<Invoice> UpdateAmountsPaid(List<Invoice> invoices, List<Transaction> transactions)
+		{
 			return invoices.ConvertAll((invoice) => {
 				return UpdateAmountPaid(invoice, transactions);
 			});

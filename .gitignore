@@ -5,4 +5,5 @@
 frontend/node_modules/*
 frontend/.dist/*
 node_modules/*
-backend/obj/Debug/netcoreapp2.1/backend.csproj.CoreCompileInputs.cache
+backend/obj/*
+backend/bin/*

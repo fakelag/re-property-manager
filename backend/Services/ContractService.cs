@@ -48,6 +48,8 @@ namespace backend.Services
 			return null;
 		}
 
+		public Property GetProperty(RentalContract contract) => _properties.Find((prop) => prop.Id == contract.Property).FirstOrDefault();
+
 		public RentalContract Create(Property property, RentalContract contract)
 		{
 			contract.Property = property.Id;

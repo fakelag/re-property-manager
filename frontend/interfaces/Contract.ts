@@ -11,7 +11,7 @@ export default interface IContract {
 	beginDate: Date;
 	endDate: Date | null;
 	paymentAmount: number;
-	paymentDateOfMonth: number;
+	paymentDayOfMonth: number;
 	paymentRaise?: {
 		costIndexDate: Date;
 	};

@@ -42,10 +42,10 @@ namespace backend.Models
 		[JsonRequired]
 		public int PaymentAmount { get; set; }
 
-		[BsonElement("paymentDateOfMonth")]
-		[JsonProperty("paymentDateOfMonth")]
+		[BsonElement("paymentDayOfMonth")]
+		[JsonProperty("paymentDayOfMonth")]
 		[JsonRequired]
-		public int PaymentDateOfMonth { get; set; }
+		public int PaymentDayOfMonth { get; set; }
 
 		[BsonElement("paymentRaise")]
 		[JsonProperty("paymentRaise")]
