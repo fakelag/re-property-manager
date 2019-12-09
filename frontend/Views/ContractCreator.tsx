@@ -29,7 +29,7 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 			ssn: '',
 		},
 		paymentAmount: 70000,
-		paymentDateOfMonth: 27,
+		paymentDayOfMonth: 27,
 		property: '',
 		// paymentRaise?: {
 		// 	costIndexDate: Date;
@@ -233,12 +233,12 @@ const ContractCreator = ({ match }: { match: MatchParams<{ propertyId: string, c
 							type="text"
 							keyfilter={/([1-9]|[12]\d|3[01])/}
 							maxLength={2}
-							value={contract.paymentDateOfMonth.toString()}
+							value={contract.paymentDayOfMonth.toString()}
 							onChange={(e) => {
 									try {
 										setContract({
 											...contract,
-											paymentDateOfMonth: e.currentTarget.value
+											paymentDayOfMonth: e.currentTarget.value
 												? Number.parseInt(e.currentTarget.value, 10)
 												: 1,
 										});
